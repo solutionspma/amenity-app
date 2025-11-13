@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amenity Settings - Account Management</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
+            line-height: 1.6;
+        }
+
+        .settings-header {
+            background: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: none;
+            border: none;
+            font-size: 14px;
+            font-weight: 500;
+            color: #3b82f6;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .back-btn:hover {
+            background: #f1f5f9;
+        }
+
+        .settings-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .settings-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 24px;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 24px;
+        }
+
+        .settings-sidebar {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 24px;
+            height: fit-content;
+            border: 1px solid #e2e8f0;
+        }
+
+        .sidebar-section {
+            margin-bottom: 32px;
+        }
+
+        .sidebar-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 12px;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+            font-weight: 500;
+            color: #475569;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+        }
+
+        .sidebar-item:hover {
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        .sidebar-item.active {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .settings-main {
+            background: #ffffff;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            min-height: 600px;
+        }
+
+        .main-header {
+            padding: 24px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .main-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .main-subtitle {
+            font-size: 14px;
+            color: #64748b;
+            margin-top: 4px;
+        }
+
+        .main-content {
+            padding: 24px;
+        }
+
+        .setting-section {
+            margin-bottom: 32px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 16px;
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .setting-info {
+            flex: 1;
+        }
+
+        .setting-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #1e293b;
+            margin-bottom: 4px;
+        }
+
+        .setting-desc {
+            font-size: 13px;
+            color: #64748b;
+        }
+
+        .setting-control {
+            margin-left: 16px;
+        }
+
+        .form-input {
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            width: 200px;
+        }
+
+        .form-select {
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            background: white;
+            width: 200px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 44px;
+            height: 24px;
+            background: #cbd5e1;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .toggle-switch.active {
+            background: #3b82f6;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+
+        .toggle-switch.active .toggle-slider {
+            transform: translateX(20px);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background: #2563eb;
+        }
+
+        .btn-secondary {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .profile-section {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 32px;
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #e2e8f0;
+        }
+
+        .profile-info h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 4px;
+        }
+
+        .profile-info p {
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .subscription-badge {
+            display: inline-block;
+            background: #fef3c7;
+            color: #92400e;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-top: 8px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .danger-zone {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 12px;
+            padding: 24px;
+            margin-top: 32px;
+        }
+
+        .danger-title {
+            color: #991b1b;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .danger-desc {
+            color: #7f1d1d;
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+
+        .notification-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            background: #3b82f6;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-title {
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 4px;
+        }
+
+        .notification-text {
+            font-size: 13px;
+            color: #64748b;
+        }
+
+        .notification-time {
+            font-size: 12px;
+            color: #9ca3af;
+        }
+    </style>
+</head>
+<body>
+    <header class="settings-header">
+        <button class="back-btn" onclick="window.history.back()">
+            ← Back to Feed
+        </button>
+        <h1 class="settings-title">Account Settings</h1>
+    </header>
+
+    <div class="settings-container">
+        <aside class="settings-sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-title">Account</div>
+                <button class="sidebar-item active" onclick="showSettingsTab('profile')">
+                    👤 Profile & Info
+                </button>
+                <button class="sidebar-item" onclick="showSettingsTab('privacy')">
+                    🔒 Privacy & Security
+                </button>
+                <button class="sidebar-item" onclick="showSettingsTab('notifications')">
+                    🔔 Notifications
+                </button>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title">Content</div>
+                <button class="sidebar-item" onclick="showSettingsTab('posts')">
+                    📝 Posts & Media
+                </button>
+                <button class="sidebar-item" onclick="showSettingsTab('blocked')">
+                    🚫 Blocked Users
+                </button>
+                <button class="sidebar-item" onclick="showSettingsTab('preferences')">
+                    ⚙️ Feed Preferences
+                </button>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title">Subscription</div>
+                <button class="sidebar-item" onclick="showSettingsTab('subscription')">
+                    💳 Subscription & Billing
+                </button>
+                <button class="sidebar-item" onclick="showSettingsTab('creator')">
+                    🎥 Creator Tools
+                </button>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title">Support</div>
+                <button class="sidebar-item" onclick="showSettingsTab('help')">
+                    ❓ Help & Support
+                </button>
+                <button class="sidebar-item" onclick="showSettingsTab('about')">
+                    ℹ️ About Amenity
+                </button>
+            </div>
+        </aside>
+
+        <main class="settings-main">
+            <!-- Profile Tab -->
+            <div id="profile" class="tab-content active">
+                <div class="main-header">
+                    <h2 class="main-title">Profile & Information</h2>
+                    <p class="main-subtitle">Manage your public profile and personal information</p>
+                </div>
+                <div class="main-content">
+                    <div class="profile-section">
+                        <div class="profile-header">
+                            <img src="https://via.placeholder.com/80x80/3b82f6/ffffff?text=P" alt="Profile" class="profile-avatar">
+                            <div class="profile-info">
+                                <h3>Pastor Rod Baker</h3>
+                                <p>@pastorrodbaker • Altar Life International Ministries</p>
+                                <span class="subscription-badge">Business Plan</span>
+                            </div>
+                            <button class="btn">Change Photo</button>
+                        </div>
+                    </div>
+
+                    <div class="setting-section">
+                        <h3 class="section-title">Basic Information</h3>
+                        
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-label">Display Name</div>
+                                <div class="setting-desc">This is how your name appears to other users</div>
+                            </div>
+                            <div class="setting-control">
+                                <input type="text" class="form-input" value="Pastor Rod Baker" onchange="updateProfile('displayName', this.value)">
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-label">Username</div>
+                                <div class="setting-desc">Your unique identifier on the platform</div>
+                            </div>
+                            <div class="setting-control">
+                                <input type="text" class="form-input" value="pastorrodbaker" onchange="updateProfile('username', this.value)">
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-label">Bio</div>
+                                <div class="setting-desc">Tell others about yourself</div>
+                            </div>
+                            <div class="setting-control">
+                                <textarea class="form-input" style="height: 80px; resize: vertical;" onchange="updateProfile('bio', this.value)">Senior Pastor at Altar Life International Ministries. Spreading hope and faith through community and service.</textarea>
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-label">Church Affiliation</div>
+                                <div class="setting-desc">Your home church or ministry</div>
+                            </div>
+                            <div class="setting-control">
+                                <select class="form-select" onchange="updateProfile('church', this.value)">
+                                    <option value="altar_life" selected>Altar Life International Ministries</option>
+                                    <option value="community_baptist">Community Baptist Church</option>
+                                    <option value="faith_center">Faith Center</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-label">Location</div>
+                                <div class="setting-desc">Where you're located</div>
+                            </div>
+                            <div class="setting-control">
+                                <input type="text" class="form-input" value="Atlanta, GA" onchange="updateProfile('location', this.value)">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="setting-section">
+                        <h3 class="section-title">Contact Information</h3>
+                        
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-label">Email Address</div>
+                                <div class="setting-desc">Used for account recovery and notifications</div>
+                            </div>
+                            <div class="setting-control">
+                                <input type="email" class="form-input" value="pastor@altarlife.org" onchange="updateProfile('email', this.value)">
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-label">Phone Number</div>
+                                <div class="setting-desc">Optional - for two-factor authentication</div>
+                            </div>
+                            <div class="setting-control">
+                                <input type="tel" class="form-input" value="+1 (555) 123-4567" onchange="updateProfile('phone', this.value)">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Privacy Tab -->
+            <div id="privacy" class="tab-content">
+                <div class="main-header">
+                    <h2 class="main-title">Privacy & Security</h2>
+                    <p class="main-subtitle">Control who can see your content and interact with you</p>
+                </div>
+                <div class="main-content">
+                    <div class="setting-section">
+                        <h3 class="section-title">Profile Privacy</h3>
+                        
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-label">Profile Visibility</div>
+                                <div class="setting-desc">Who can see your profile and posts</div>
+                            </div>
+                            <div class="setting-control">
+                                <select class="form-select" onchange="updatePrivacy('visibility', this.value)">
+                                    <option value="public" selected>Public - Anyone can see</option>
+                                    <option value="church">Church Members Only</option>
+                                    <option value="followers">Followers Only</option>
+                                    <option value="private">Private - Invitation Only</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-label">Allow Messages</div>
+                                <div class="setting-desc">Who can send you direct messages</div>
+                            </div>
+                            <div class="setting-control">
+                                <div class="toggle-switch active" onclick="toggleSetting(this, 'allowMessages')">
+                                    <div class="toggle-slider"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-label">Show Online Status</div>
+                                <div class="setting-desc">Let others see when you're active</div>
+                            </div>
+                            <div class="setting-control">
+                                <div class="toggle-switch active" onclick="toggleSetting(this, 'showOnline')">
+                                    <div class="toggle-slider"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="setting-section">
+                        <h3 class="section-title">Account Security</h3>
+                        
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-label">Two-Factor Authentication</div>
+                                <div class="setting-desc">Add an extra layer of security to your account</div>
+                            </div>
+                            <div class="setting-control">
+                                <button class="btn btn-secondary" onclick="setup2FA()">Setup 2FA</button>
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-label">Change Password</div>
+                                <div class="setting-desc">Update your account password</div>
+                            </div>
+                            <div class="setting-control">
+                                <button class="btn btn-secondary" onclick="changePassword()">Change Password</button>
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-label">Login Sessions</div>
+                                <div class="setting-desc">Manage devices signed into your account</div>
+                            </div>
+                            <div class="setting-control">
+                                <button class="btn btn-secondary" onclick="manageSessions()">View Sessions</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notifications Tab -->
+            <div id="notifications" class="tab-content">
+                <div class="main-header">
+                    <h2 class="main-title">Notification Settings</h2>
+                    <p class="main-subtitle">Choose what notifications you want to receive</p>
+                </div>
+                <div class="main-content">
+                    <div class="setting-section">
+                        <h3 class="section-title">Push Notifications</h3>
+                        
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-label">New Posts</div>
+                                <div class="setting-desc">Get notified when people you follow post</div>
+                            </div>
+                            <div class="setting-control">
+                                <div class="toggle-switch active" onclick="toggleSetting(this, 'notifyPosts')">
+                                    <div class="toggle-slider"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-label">Likes & Comments</div>
+                                <div class="setting-desc">Get notified when someone interacts with your content</div>
+                            </div>
+                            <div class="setting-control">
+                                <div class="toggle-switch active" onclick="toggleSetting(this, 'notifyInteractions')">
+                                    <div class="toggle-slider"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-label">New Followers</div>
+                                <div class="setting-desc">Get notified when someone starts following you</div>
+                            </div>
+                            <div class="setting-control">
+                                <div class="toggle-switch active" onclick="toggleSetting(this, 'notifyFollowers')">
+                                    <div class="toggle-slider"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-label">Church Events</div>
+                                <div class="setting-desc">Get notified about church events and announcements</div>
+                            </div>
+                            <div class="setting-control">
+                                <div class="toggle-switch active" onclick="toggleSetting(this, 'notifyEvents')">
+                                    <div class="toggle-slider"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="setting-section">
+                        <h3 class="section-title">Email Notifications</h3>
+                        
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-label">Weekly Summary</div>
+                                <div class="setting-desc">Receive a weekly email with platform highlights</div>
+                            </div>
+                            <div class="setting-control">
+                                <div class="toggle-switch" onclick="toggleSetting(this, 'emailWeekly')">
+                                    <div class="toggle-slider"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-label">Security Alerts</div>
+                                <div class="setting-desc">Receive emails about account security</div>
+                            </div>
+                            <div class="setting-control">
+                                <div class="toggle-switch active" onclick="toggleSetting(this, 'emailSecurity')">
+                                    <div class="toggle-slider"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Subscription Tab -->
+            <div id="subscription" class="tab-content">
+                <div class="main-header">
+                    <h2 class="main-title">Subscription & Billing</h2>
+                    <p class="main-subtitle">Manage your subscription and payment information</p>
+                </div>
+                <div class="main-content">
+                    <div class="profile-section">
+                        <h3 style="margin-bottom: 16px;">Current Plan</h3>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <h4 style="font-size: 18px; font-weight: 600; margin-bottom: 4px;">Business Plan</h4>
+                                <p style="color: #64748b;">$29.99/month • Unlimited posts, video uploads, analytics</p>
+                                <p style="color: #64748b; font-size: 13px;">Next billing: March 15, 2024</p>
+                            </div>
+                            <button class="btn" onclick="manageBilling()">Manage Billing</button>
+                        </div>
+                    </div>
+
+                    <div class="setting-section">
+                        <h3 class="section-title">Available Plans</h3>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 16px;">
+                            <div style="border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px;">
+                                <h4 style="font-weight: 600; margin-bottom: 8px;">Free</h4>
+                                <p style="color: #64748b; font-size: 13px; margin-bottom: 12px;">Basic access to community features</p>
+                                <div style="font-size: 24px; font-weight: 700; margin-bottom: 16px;">$0<span style="font-size: 14px; font-weight: 400;">/month</span></div>
+                                <button class="btn btn-secondary" style="width: 100%;">Current Plan</button>
+                            </div>
+
+                            <div style="border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px;">
+                                <h4 style="font-weight: 600; margin-bottom: 8px;">Premium</h4>
+                                <p style="color: #64748b; font-size: 13px; margin-bottom: 12px;">Advanced features and priority support</p>
+                                <div style="font-size: 24px; font-weight: 700; margin-bottom: 16px;">$9.99<span style="font-size: 14px; font-weight: 400;">/month</span></div>
+                                <button class="btn" style="width: 100%;" onclick="upgradePlan('premium')">Upgrade</button>
+                            </div>
+
+                            <div style="border: 2px solid #3b82f6; border-radius: 12px; padding: 20px; position: relative;">
+                                <div style="position: absolute; top: -10px; left: 20px; background: #3b82f6; color: white; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 600;">CURRENT</div>
+                                <h4 style="font-weight: 600; margin-bottom: 8px;">Business</h4>
+                                <p style="color: #64748b; font-size: 13px; margin-bottom: 12px;">Full platform access with advanced tools</p>
+                                <div style="font-size: 24px; font-weight: 700; margin-bottom: 16px;">$29.99<span style="font-size: 14px; font-weight: 400;">/month</span></div>
+                                <button class="btn btn-secondary" style="width: 100%;">Current Plan</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Other tabs would be similar -->
+            <div id="posts" class="tab-content">
+                <div class="main-header">
+                    <h2 class="main-title">Posts & Media Management</h2>
+                    <p class="main-subtitle">Manage your content and media uploads</p>
+                </div>
+                <div class="main-content">
+                    <p>Content management interface coming soon...</p>
+                </div>
+            </div>
+
+            <!-- Help Tab -->
+            <div id="help" class="tab-content">
+                <div class="main-header">
+                    <h2 class="main-title">Help & Support</h2>
+                    <p class="main-subtitle">Get help and contact support</p>
+                </div>
+                <div class="main-content">
+                    <div class="setting-section">
+                        <h3 class="section-title">Contact Support</h3>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                            <button class="btn" onclick="contactSupport('general')">General Support</button>
+                            <button class="btn" onclick="contactSupport('technical')">Technical Issues</button>
+                            <button class="btn" onclick="contactSupport('billing')">Billing Help</button>
+                            <button class="btn" onclick="contactSupport('report')">Report Content</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        class AmenitySettings {
+            constructor() {
+                this.currentTab = 'profile';
+                this.settings = {
+                    displayName: 'Pastor Rod Baker',
+                    username: 'pastorrodbaker',
+                    bio: 'Senior Pastor at Altar Life International Ministries. Spreading hope and faith through community and service.',
+                    church: 'altar_life',
+                    location: 'Atlanta, GA',
+                    email: 'pastor@altarlife.org',
+                    phone: '+1 (555) 123-4567',
+                    visibility: 'public',
+                    allowMessages: true,
+                    showOnline: true,
+                    notifyPosts: true,
+                    notifyInteractions: true,
+                    notifyFollowers: true,
+                    notifyEvents: true,
+                    emailWeekly: false,
+                    emailSecurity: true
+                };
+                this.init();
+            }
+
+            init() {
+                console.log('⚙️ Amenity Settings Initialized');
+            }
+
+            updateProfile(field, value) {
+                this.settings[field] = value;
+                console.log(`Updated ${field}:`, value);
+                this.showNotification(`${field} updated successfully`);
+                
+                // Simulate API call
+                setTimeout(() => {
+                    console.log('Profile updated on server');
+                }, 500);
+            }
+
+            updatePrivacy(field, value) {
+                this.settings[field] = value;
+                console.log(`Updated privacy ${field}:`, value);
+                this.showNotification('Privacy settings updated');
+            }
+
+            toggleSetting(element, setting) {
+                element.classList.toggle('active');
+                this.settings[setting] = element.classList.contains('active');
+                console.log(`Toggled ${setting}:`, this.settings[setting]);
+                this.showNotification(`${setting} ${this.settings[setting] ? 'enabled' : 'disabled'}`);
+            }
+
+            setup2FA() {
+                this.showNotification('Two-factor authentication setup initiated');
+                // Would open 2FA setup modal
+            }
+
+            changePassword() {
+                this.showNotification('Password change form opened');
+                // Would open password change modal
+            }
+
+            manageSessions() {
+                this.showNotification('Login sessions loaded');
+                // Would show active sessions
+            }
+
+            manageBilling() {
+                this.showNotification('Opening billing management...');
+                // Would redirect to billing portal
+            }
+
+            upgradePlan(plan) {
+                this.showNotification(`Upgrading to ${plan} plan...`);
+                // Would handle plan upgrade
+            }
+
+            contactSupport(type) {
+                this.showNotification(`Opening ${type} support...`);
+                // Would open support interface
+            }
+
+            showNotification(message) {
+                const notification = document.createElement('div');
+                notification.textContent = message;
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: #059669;
+                    color: white;
+                    padding: 12px 16px;
+                    border-radius: 8px;
+                    font-size: 14px;
+                    font-weight: 500;
+                    z-index: 10001;
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                `;
+                
+                document.body.appendChild(notification);
+                setTimeout(() => {
+                    notification.style.opacity = '0';
+                    setTimeout(() => notification.remove(), 300);
+                }, 3000);
+            }
+        }
+
+        function showSettingsTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active from all sidebar items
+            document.querySelectorAll('.sidebar-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            
+            // Activate sidebar item
+            event.target.classList.add('active');
+        }
+
+        // Global function aliases for form handlers
+        window.updateProfile = (field, value) => amenitySettings.updateProfile(field, value);
+        window.updatePrivacy = (field, value) => amenitySettings.updatePrivacy(field, value);
+        window.toggleSetting = (element, setting) => amenitySettings.toggleSetting(element, setting);
+        window.setup2FA = () => amenitySettings.setup2FA();
+        window.changePassword = () => amenitySettings.changePassword();
+        window.manageSessions = () => amenitySettings.manageSessions();
+        window.manageBilling = () => amenitySettings.manageBilling();
+        window.upgradePlan = (plan) => amenitySettings.upgradePlan(plan);
+        window.contactSupport = (type) => amenitySettings.contactSupport(type);
+
+        // Initialize Settings
+        const amenitySettings = new AmenitySettings();
+    </script>
+</body>
+</html>

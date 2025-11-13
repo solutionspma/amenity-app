@@ -1,0 +1,183 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer components {
+  .amenity-card {
+    @apply bg-white dark:bg-amenity-800 border border-amenity-200 dark:border-amenity-700 rounded-lg shadow-sm;
+  }
+  
+  .amenity-btn {
+    @apply inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50;
+  }
+  
+  .amenity-btn-primary {
+    @apply amenity-btn bg-primary-600 text-white hover:bg-primary-700;
+  }
+  
+  .amenity-btn-secondary {
+    @apply amenity-btn bg-amenity-100 text-amenity-900 hover:bg-amenity-200 dark:bg-amenity-800 dark:text-amenity-100 dark:hover:bg-amenity-700;
+  }
+  
+  .amenity-input {
+    @apply flex h-10 w-full rounded-md border border-amenity-300 bg-white px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-amenity-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-amenity-700 dark:bg-amenity-900 dark:text-amenity-100;
+  }
+
+  .video-player {
+    @apply w-full h-auto bg-black rounded-lg overflow-hidden;
+  }
+
+  .video-controls {
+    @apply absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4;
+  }
+
+  .creator-card {
+    @apply amenity-card p-6 hover:shadow-md transition-shadow duration-200;
+  }
+
+  .feed-post {
+    @apply amenity-card mb-4 overflow-hidden;
+  }
+
+  .mobile-nav {
+    @apply fixed bottom-0 left-0 right-0 bg-white dark:bg-amenity-900 border-t border-amenity-200 dark:border-amenity-700 z-50;
+  }
+
+  .modal-backdrop {
+    @apply fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4;
+  }
+
+  .modal-content {
+    @apply amenity-card max-w-lg w-full max-h-[90vh] overflow-y-auto;
+  }
+
+  .loading-spinner {
+    @apply animate-spin rounded-full h-6 w-6 border-2 border-amenity-300 border-t-primary-600;
+  }
+
+  .notification-toast {
+    @apply amenity-card p-4 mb-2 shadow-lg;
+  }
+
+  .tier-badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  .tier-free {
+    @apply tier-badge bg-amenity-100 text-amenity-800 dark:bg-amenity-800 dark:text-amenity-200;
+  }
+
+  .tier-premium {
+    @apply tier-badge bg-warning-100 text-warning-800 dark:bg-warning-800 dark:text-warning-200;
+  }
+
+  .tier-business {
+    @apply tier-badge bg-primary-100 text-primary-800 dark:bg-primary-800 dark:text-primary-200;
+  }
+
+  .tier-enterprise {
+    @apply tier-badge bg-purple-100 text-purple-800 dark:bg-purple-800 dark:text-purple-200;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .gradient-text {
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .glass-effect {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+}
+
+/* Custom Video Styles */
+.video-container {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16/9;
+}
+
+.video-shorts {
+  aspect-ratio: 9/16;
+  max-height: calc(100vh - 200px);
+}
+
+/* Live Stream Indicators */
+.live-indicator {
+  @apply inline-flex items-center gap-1 bg-red-600 text-white px-2 py-1 rounded-full text-xs font-medium;
+}
+
+.live-dot {
+  @apply w-2 h-2 bg-white rounded-full animate-pulse;
+}
+
+/* Creator Dashboard Styles */
+.dashboard-stat {
+  @apply amenity-card p-6 text-center;
+}
+
+.dashboard-stat-number {
+  @apply text-3xl font-bold text-primary-600 mb-2;
+}
+
+.dashboard-stat-label {
+  @apply text-sm text-amenity-600 dark:text-amenity-400;
+}
+
+/* Chat & Messaging */
+.chat-message {
+  @apply flex gap-3 p-3 hover:bg-amenity-50 dark:hover:bg-amenity-800/50 transition-colors;
+}
+
+.chat-input {
+  @apply amenity-input rounded-full px-4;
+}
+
+/* Mobile-First Responsive Design */
+@media (max-width: 640px) {
+  .feed-post {
+    @apply mx-0 rounded-none border-x-0;
+  }
+  
+  .video-container {
+    @apply rounded-none;
+  }
+  
+  .modal-content {
+    @apply rounded-t-lg rounded-b-none mt-auto;
+  }
+}
+
+/* Dark Mode Enhancements */
+@media (prefers-color-scheme: dark) {
+  .video-player {
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  }
+}

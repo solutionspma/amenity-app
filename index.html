@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amenity - Faith Social Platform</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Modern Social Media Design System */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Core Colors */
+            --primary: #000000;
+            --secondary: #8e8e8e;
+            --accent: #0095f6;
+            --success: #00ba7c;
+            --danger: #ed4956;
+            --warning: #ffcc00;
+            
+            /* Backgrounds */
+            --bg-primary: #ffffff;
+            --bg-secondary: #fafafa;
+            --bg-tertiary: #f5f5f5;
+            --bg-modal: rgba(0, 0, 0, 0.65);
+            
+            /* Text */
+            --text-primary: #262626;
+            --text-secondary: #8e8e8e;
+            --text-light: #c7c7c7;
+            
+            /* Borders */
+            --border-light: #efefef;
+            --border-medium: #dbdbdb;
+            --border-dark: #a8a8a8;
+            
+            /* Shadows */
+            --shadow-light: 0 2px 8px rgba(0, 0, 0, 0.1);
+            --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.15);
+            --shadow-heavy: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Header Navigation */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: var(--bg-primary);
+            border-bottom: 1px solid var(--border-light);
+            padding: 8px 0;
+        }
+
+        .nav-container {
+            max-width: 975px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 60px;
+        }
+
+        .logo {
+            font-size: 29px;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+            font-family: 'Billabong', cursive;
+        }
+
+        .search-bar {
+            flex: 1;
+            max-width: 268px;
+            margin: 0 auto;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 3px 16px;
+            font-size: 16px;
+            border: 1px solid var(--border-medium);
+            border-radius: 8px;
+            background: var(--bg-secondary);
+            outline: none;
+            color: var(--text-primary);
+        }
+
+        .search-input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+        }
+
+        .nav-icon {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            fill: var(--text-primary);
+        }
+
+        .profile-pic {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            cursor: pointer;
+            object-fit: cover;
+        }
+
+        .profile-pic.active {
+            border-color: var(--primary);
+        }
+
+        /* Main Layout */
+        .main-container {
+            max-width: 975px;
+            margin: 0 auto;
+            padding: 30px 20px;
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 35px;
+        }
+
+        /* Feed Section */
+        .feed {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* Stories Section */
+        .stories-container {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            padding: 16px;
+            display: flex;
+            gap: 18px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .stories-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .story {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            min-width: 66px;
+        }
+
+        .story-ring {
+            width: 66px;
+            height: 66px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2px;
+        }
+
+        .story-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--bg-primary);
+            border: 3px solid var(--bg-primary);
+            object-fit: cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: var(--text-secondary);
+        }
+
+        .story-username {
+            font-size: 12px;
+            color: var(--text-primary);
+            max-width: 74px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* Post Card */
+        .post {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            margin-bottom: 24px;
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            padding: 14px 16px;
+            justify-content: space-between;
+        }
+
+        .post-user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .post-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        .post-username {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .post-time {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .post-options {
+            cursor: pointer;
+            padding: 8px;
+        }
+
+        .post-content {
+            aspect-ratio: 1;
+            background: var(--bg-tertiary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .post-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .post-actions {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 6px 16px 8px;
+        }
+
+        .post-actions-left {
+            display: flex;
+            gap: 16px;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            margin: -8px;
+        }
+
+        .action-icon {
+            width: 24px;
+            height: 24px;
+            fill: var(--text-primary);
+        }
+
+        .action-icon.liked {
+            fill: var(--danger);
+        }
+
+        .post-likes {
+            padding: 0 16px 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .post-caption {
+            padding: 0 16px 8px;
+            font-size: 14px;
+            line-height: 18px;
+        }
+
+        .post-comments {
+            padding: 0 16px 16px;
+        }
+
+        .view-comments {
+            font-size: 14px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border: none;
+            background: none;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* User Profile Card */
+        .profile-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 0;
+        }
+
+        .profile-large {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .profile-info h3 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+
+        .profile-info p {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        /* Suggestions */
+        .suggestions {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            padding: 16px;
+        }
+
+        .suggestions-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .suggestions-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .see-all {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .suggestion-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 0;
+        }
+
+        .suggestion-user {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .suggestion-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .suggestion-info h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+
+        .suggestion-info p {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .follow-btn {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--accent);
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* Feed Toggle */
+        .feed-toggle {
+            display: flex;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .toggle-btn {
+            flex: 1;
+            padding: 12px;
+            background: none;
+            border: none;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .toggle-btn.active {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        /* Video Feed */
+        .video-feed {
+            display: none;
+        }
+
+        .video-feed.active {
+            display: block;
+        }
+
+        .video-item {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+
+        .video-player {
+            position: relative;
+            aspect-ratio: 9/16;
+            max-height: 500px;
+            background: var(--bg-tertiary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .play-button {
+            width: 68px;
+            height: 68px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.8);
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Modal System */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-modal);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+
+        .modal-content {
+            background: var(--bg-primary);
+            border-radius: 12px;
+            padding: 24px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            padding: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .main-container {
+                grid-template-columns: 1fr;
+                padding: 0;
+                gap: 0;
+            }
+            
+            .sidebar {
+                display: none;
+            }
+            
+            .nav-container {
+                padding: 0 16px;
+            }
+            
+            .search-bar {
+                display: none;
+            }
+        }
+
+        /* Dark Mode Support */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-primary: #000000;
+                --bg-secondary: #121212;
+                --bg-tertiary: #1e1e1e;
+                --text-primary: #ffffff;
+                --text-secondary: #a8a8a8;
+                --text-light: #737373;
+                --border-light: #262626;
+                --border-medium: #363636;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Navigation -->
+    <header class="header">
+        <div class="nav-container">
+            <a href="#" class="logo">Amenity</a>
+            
+            <div class="search-bar">
+                <input type="text" class="search-input" placeholder="Search">
+            </div>
+            
+            <nav class="nav-actions">
+                <svg class="nav-icon" viewBox="0 0 24 24">
+                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                </svg>
+                <svg class="nav-icon" viewBox="0 0 24 24">
+                    <path d="M22.46 6c-.77.35-1.6.58-2.46.69.88-.53 1.56-1.37 1.88-2.38-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29 0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15 0 1.49.75 2.81 1.91 3.56-.71 0-1.37-.2-1.95-.5v.03c0 2.08 1.48 3.82 3.44 4.21a4.22 4.22 0 0 1-1.93.07 4.28 4.28 0 0 0 4 2.98 8.521 8.521 0 0 1-5.33 1.84c-.34 0-.68-.02-1.02-.06C3.44 20.29 5.7 21 8.12 21 16 21 20.33 14.46 20.33 8.79c0-.19 0-.37-.01-.56.84-.6 1.56-1.36 2.14-2.23z"/>
+                </svg>
+                <svg class="nav-icon" viewBox="0 0 24 24">
+                    <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
+                </svg>
+                <svg class="nav-icon" viewBox="0 0 24 24">
+                    <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.174-.105-.949-.199-2.403.041-3.439.219-.937 1.404-5.939 1.404-5.939s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.096.118.112.221.085.315-.09.394-.292 1.188-.332 1.355-.053.218-.173.265-.402.160-1.499-.698-2.436-2.888-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.357-.631-2.749-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24.009 12.017 24.009c6.624 0 11.99-5.367 11.99-11.988C24.007 5.367 18.641.001.012.001z"/>
+                </svg>
+                <img src="https://via.placeholder.com/28x28/6366f1/ffffff?text=U" alt="Profile" class="profile-pic" onclick="toggleProfileMenu()">
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        <!-- Feed Column -->
+        <div class="feed">
+            <!-- Feed Toggle -->
+            <div class="feed-toggle">
+                <button class="toggle-btn active" onclick="switchFeed('posts')">Posts</button>
+                <button class="toggle-btn" onclick="switchFeed('videos')">Videos</button>
+                <button class="toggle-btn" onclick="switchFeed('live')">Live</button>
+                <button class="toggle-btn" onclick="switchFeed('creators')">Creators</button>
+            </div>
+
+            <!-- Stories -->
+            <div class="stories-container" id="stories">
+                <div class="story" onclick="viewStory('your')">
+                    <div class="story-ring">
+                        <div class="story-avatar">+</div>
+                    </div>
+                    <span class="story-username">Your story</span>
+                </div>
+                <div class="story" onclick="viewStory('pastor_rod')">
+                    <div class="story-ring">
+                        <div class="story-avatar">🎤</div>
+                    </div>
+                    <span class="story-username">Pastor Rod</span>
+                </div>
+                <div class="story" onclick="viewStory('sara_baker')">
+                    <div class="story-ring">
+                        <div class="story-avatar">👫</div>
+                    </div>
+                    <span class="story-username">Sara Baker</span>
+                </div>
+                <div class="story" onclick="viewStory('finance_ministry')">
+                    <div class="story-ring">
+                        <div class="story-avatar">💰</div>
+                    </div>
+                    <span class="story-username">Finance Ministry</span>
+                </div>
+            </div>
+
+            <!-- Posts Feed -->
+            <div class="posts-feed" id="posts-feed">
+                <!-- Post 1 -->
+                <article class="post">
+                    <header class="post-header">
+                        <div class="post-user-info">
+                            <img src="https://via.placeholder.com/32x32/6366f1/ffffff?text=P" alt="Pastor Rod" class="post-avatar">
+                            <div>
+                                <a href="#" class="post-username">pastorrodbaker</a>
+                                <div class="post-time">2 hours ago</div>
+                            </div>
+                        </div>
+                        <button class="post-options" onclick="showPostOptions()">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                <circle cx="12" cy="12" r="1.5"/>
+                                <circle cx="6" cy="12" r="1.5"/>
+                                <circle cx="18" cy="12" r="1.5"/>
+                            </svg>
+                        </button>
+                    </header>
+                    
+                    <div class="post-content">
+                        <img src="https://via.placeholder.com/600x600/f3f4f6/374151?text=Sunday+Service+Photo" alt="Sunday Service" class="post-image">
+                    </div>
+                    
+                    <div class="post-actions">
+                        <div class="post-actions-left">
+                            <button class="action-btn" onclick="toggleLike(this)">
+                                <svg class="action-icon" viewBox="0 0 24 24">
+                                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                                </svg>
+                            </button>
+                            <button class="action-btn" onclick="showComments()">
+                                <svg class="action-icon" viewBox="0 0 24 24">
+                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                                </svg>
+                            </button>
+                            <button class="action-btn" onclick="sharePost()">
+                                <svg class="action-icon" viewBox="0 0 24 24">
+                                    <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+                                    <polyline points="16,6 12,2 8,6"/>
+                                    <line x1="12" y1="2" x2="12" y2="15"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <button class="action-btn" onclick="savePost()">
+                            <svg class="action-icon" viewBox="0 0 24 24">
+                                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <div class="post-likes">
+                        <strong>247 likes</strong>
+                    </div>
+                    
+                    <div class="post-caption">
+                        <strong>pastorrodbaker</strong> Sunday's message on "Walking in Faith" delivered powerful insights into trusting God's guidance through life's challenges. The congregation experienced a profound moment of spiritual renewal. 🙏 #FaithJourney #AltarLife
+                    </div>
+                    
+                    <div class="post-comments">
+                        <button class="view-comments" onclick="viewAllComments()">View all 18 comments</button>
+                    </div>
+                </article>
+
+                <!-- Post 2 -->
+                <article class="post">
+                    <header class="post-header">
+                        <div class="post-user-info">
+                            <img src="https://via.placeholder.com/32x32/10b981/ffffff?text=S" alt="Sara Baker" class="post-avatar">
+                            <div>
+                                <a href="#" class="post-username">sarabaker_youth</a>
+                                <div class="post-time">4 hours ago</div>
+                            </div>
+                        </div>
+                        <button class="post-options" onclick="showPostOptions()">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                <circle cx="12" cy="12" r="1.5"/>
+                                <circle cx="6" cy="12" r="1.5"/>
+                                <circle cx="18" cy="12" r="1.5"/>
+                            </svg>
+                        </button>
+                    </header>
+                    
+                    <div class="post-content">
+                        <img src="https://via.placeholder.com/600x600/f3f4f6/374151?text=Youth+Ministry+Event" alt="Youth Ministry" class="post-image">
+                    </div>
+                    
+                    <div class="post-actions">
+                        <div class="post-actions-left">
+                            <button class="action-btn" onclick="toggleLike(this)">
+                                <svg class="action-icon" viewBox="0 0 24 24">
+                                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                                </svg>
+                            </button>
+                            <button class="action-btn" onclick="showComments()">
+                                <svg class="action-icon" viewBox="0 0 24 24">
+                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                                </svg>
+                            </button>
+                            <button class="action-btn" onclick="sharePost()">
+                                <svg class="action-icon" viewBox="0 0 24 24">
+                                    <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+                                    <polyline points="16,6 12,2 8,6"/>
+                                    <line x1="12" y1="2" x2="12" y2="15"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <button class="action-btn" onclick="savePost()">
+                            <svg class="action-icon" viewBox="0 0 24 24">
+                                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <div class="post-likes">
+                        <strong>189 likes</strong>
+                    </div>
+                    
+                    <div class="post-caption">
+                        <strong>sarabaker_youth</strong> Amazing night with our youth! We talked about finding purpose in God's plan and the energy was incredible. These young people are the future leaders of our faith community. ✨ #NextGeneration #YouthMinistry
+                    </div>
+                    
+                    <div class="post-comments">
+                        <button class="view-comments" onclick="viewAllComments()">View all 34 comments</button>
+                    </div>
+                </article>
+            </div>
+
+            <!-- Video Feed -->
+            <div class="video-feed" id="video-feed">
+                <div class="video-item">
+                    <header class="post-header">
+                        <div class="post-user-info">
+                            <img src="https://via.placeholder.com/32x32/6366f1/ffffff?text=P" alt="Pastor Rod" class="post-avatar">
+                            <div>
+                                <a href="#" class="post-username">pastorrodbaker</a>
+                                <div class="post-time">Sunday Service</div>
+                            </div>
+                        </div>
+                    </header>
+                    
+                    <div class="video-player">
+                        <button class="play-button" onclick="playVideo(1)">▶</button>
+                    </div>
+                    
+                    <div class="post-actions">
+                        <div class="post-actions-left">
+                            <button class="action-btn" onclick="toggleVideoLike(this)">
+                                <svg class="action-icon" viewBox="0 0 24 24">
+                                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                                </svg>
+                            </button>
+                            <button class="action-btn" onclick="showVideoComments()">
+                                <svg class="action-icon" viewBox="0 0 24 24">
+                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                                </svg>
+                            </button>
+                            <button class="action-btn" onclick="shareVideo()">
+                                <svg class="action-icon" viewBox="0 0 24 24">
+                                    <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+                                    <polyline points="16,6 12,2 8,6"/>
+                                    <line x1="12" y1="2" x2="12" y2="15"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="post-likes">
+                        <strong>1,247 likes</strong>
+                    </div>
+                    
+                    <div class="post-caption">
+                        <strong>pastorrodbaker</strong> "Walking in Faith" - Full Sunday morning service. Experience the message that transformed hearts and strengthened faith in our community.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <!-- User Profile -->
+            <div class="profile-card">
+                <img src="https://via.placeholder.com/56x56/6366f1/ffffff?text=U" alt="Your Profile" class="profile-large">
+                <div class="profile-info">
+                    <h3>member_user</h3>
+                    <p>Altar Life International Ministries</p>
+                </div>
+            </div>
+
+            <!-- Suggestions -->
+            <div class="suggestions">
+                <div class="suggestions-header">
+                    <h2 class="suggestions-title">Suggestions for you</h2>
+                    <a href="#" class="see-all">See All</a>
+                </div>
+                
+                <div class="suggestion-item">
+                    <div class="suggestion-user">
+                        <img src="https://via.placeholder.com/32x32/10b981/ffffff?text=F" alt="Finance Ministry" class="suggestion-avatar">
+                        <div class="suggestion-info">
+                            <h4>faith_finance</h4>
+                            <p>Followed by pastorrodbaker</p>
+                        </div>
+                    </div>
+                    <button class="follow-btn" onclick="followUser(this)">Follow</button>
+                </div>
+                
+                <div class="suggestion-item">
+                    <div class="suggestion-user">
+                        <img src="https://via.placeholder.com/32x32/f59e0b/ffffff?text=W" alt="Worship Team" class="suggestion-avatar">
+                        <div class="suggestion-info">
+                            <h4>altarlife_worship</h4>
+                            <p>Followed by sarabaker_youth</p>
+                        </div>
+                    </div>
+                    <button class="follow-btn" onclick="followUser(this)">Follow</button>
+                </div>
+                
+                <div class="suggestion-item">
+                    <div class="suggestion-user">
+                        <img src="https://via.placeholder.com/32x32/ef4444/ffffff?text=M" alt="Mission Team" class="suggestion-avatar">
+                        <div class="suggestion-info">
+                            <h4>global_missions</h4>
+                            <p>New creator</p>
+                        </div>
+                    </div>
+                    <button class="follow-btn" onclick="followUser(this)">Follow</button>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <!-- Modal System -->
+    <div class="modal-overlay" id="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modal-title">Modal Title</h2>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <div id="modal-body">Modal content goes here</div>
+        </div>
+    </div>
+
+    <script src="assets/js/amenity-core.js"></script>
+</body>
+</html>
