@@ -1,7 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // Netlify configuration with API routes
-  trailingSlash: true,
   images: {
     domains: [
       'via.placeholder.com',
