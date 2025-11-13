@@ -1,68 +1,66 @@
 'use client';
 
 import React from 'react';
-import { motion } from 'framer-motion';
-import Feed from '@/components/Feed';
-import Stories from '@/components/Stories';
-import SidebarSuggestions from '@/components/SidebarSuggestions';
-import CreatePost from '@/components/CreatePost';
-import LiveStreams from '@/components/LiveStreams';
-import { useAmenity } from '@/contexts/AmenityContext';
 
 export default function HomePage() {
-  const { user } = useAmenity();
-
   return (
-    <div className="max-w-6xl mx-auto px-4 py-6">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Main Feed */}
-        <div className="lg:col-span-8">
-          {/* Stories Section */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-6"
-          >
-            <Stories />
-          </motion.div>
-
-          {/* Live Streams */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="mb-6"
-          >
-            <LiveStreams />
-          </motion.div>
-
-          {/* Create Post */}
-          {user && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="mb-6"
-            >
-              <CreatePost />
-            </motion.div>
-          )}
-
-          {/* Main Feed */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-          >
-            <Feed />
-          </motion.div>
+    <div className="min-h-screen bg-gradient-to-br from-purple-600 via-purple-700 to-indigo-800">
+      <div className="container mx-auto px-4 py-12">
+        {/* Hero Section */}
+        <div className="text-center mb-12">
+          <h1 className="text-5xl md:text-7xl font-bold text-white mb-6">
+            🙏 Amenity Platform
+          </h1>
+          <p className="text-xl md:text-2xl text-purple-100 mb-8 max-w-3xl mx-auto">
+            The Ultimate Faith-Based Social Platform<br />
+            Combining the best of social media with spiritual community
+          </p>
         </div>
 
-        {/* Sidebar */}
-        <div className="hidden lg:block lg:col-span-4">
-          <div className="sticky top-6 space-y-6">
-            <SidebarSuggestions />
+        {/* Features Grid */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+          <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20">
+            <div className="text-4xl mb-4">📱</div>
+            <h3 className="text-xl font-semibold text-white mb-3">Social Feed</h3>
+            <p className="text-purple-100">Connect with your faith community through posts, stories, and live streams</p>
           </div>
+
+          <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20">
+            <div className="text-4xl mb-4">🤖</div>
+            <h3 className="text-xl font-semibold text-white mb-3">AI Assistant</h3>
+            <p className="text-purple-100">JAY-I helps with spiritual guidance and content creation</p>
+          </div>
+
+          <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20">
+            <div className="text-4xl mb-4">💰</div>
+            <h3 className="text-xl font-semibold text-white mb-3">Monetization</h3>
+            <p className="text-purple-100">80-90% revenue share for creators through tips, subscriptions & more</p>
+          </div>
+
+          <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20">
+            <div className="text-4xl mb-4">🎥</div>
+            <h3 className="text-xl font-semibold text-white mb-3">Live Streaming</h3>
+            <p className="text-purple-100">Broadcast sermons, Bible studies, and faith-based content</p>
+          </div>
+
+          <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20">
+            <div className="text-4xl mb-4">📊</div>
+            <h3 className="text-xl font-semibold text-white mb-3">Analytics</h3>
+            <p className="text-purple-100">Advanced insights to grow your ministry and reach</p>
+          </div>
+
+          <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20">
+            <div className="text-4xl mb-4">⛪</div>
+            <h3 className="text-xl font-semibold text-white mb-3">Faith Community</h3>
+            <p className="text-purple-100">Built specifically for churches, ministries, and believers</p>
+          </div>
+        </div>
+
+        {/* CTA Section */}
+        <div className="text-center">
+          <button className="bg-white text-purple-700 px-8 py-4 rounded-full text-lg font-semibold hover:bg-purple-50 transition-colors duration-200 shadow-lg hover:shadow-xl transform hover:scale-105">
+            Join the Faith Community 🚀
+          </button>
         </div>
       </div>
     </div>
