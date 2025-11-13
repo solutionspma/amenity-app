@@ -135,12 +135,14 @@ export default function HomePage() {
             transition: 'all 0.3s ease',
           }} 
           onMouseOver={(e) => {
-            e.target.style.transform = 'scale(1.05)';
-            e.target.style.boxShadow = '0 15px 35px rgba(0,0,0,0.3)';
+            const target = e.target as HTMLElement;
+            target.style.transform = 'scale(1.05)';
+            target.style.boxShadow = '0 15px 35px rgba(0,0,0,0.3)';
           }}
           onMouseOut={(e) => {
-            e.target.style.transform = 'scale(1)';
-            e.target.style.boxShadow = '0 10px 25px rgba(0,0,0,0.2)';
+            const target = e.target as HTMLElement;
+            target.style.transform = 'scale(1)';
+            target.style.boxShadow = '0 10px 25px rgba(0,0,0,0.2)';
           }}>
             Join the Faith Community 🚀
           </button>
