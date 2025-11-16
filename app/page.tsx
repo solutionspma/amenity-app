@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import AmenityHeader from '@/components/AmenityHeader';
 import AmenityFooter from '@/components/AmenityFooter';
 import { useBackdrop } from '@/contexts/BackdropContext';
+import { ProfileInitService } from '@/lib/services/profile-init';
 
 export default function Home() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -18,6 +19,13 @@ export default function Home() {
     if (typeof window !== 'undefined') {
       const signedIn = localStorage.getItem('amenity_signed_in') === 'true';
       if (signedIn) {
+        // Ensure profile exists
+        const email = localStorage.getItem('amenity_user_email') || 'user@amenity.church';
+        const existingProfile = ProfileInitService.getCurrentProfile();
+        if (!existingProfile) {
+          ProfileInitService.initializeProfile('demo-user-id', email);
+        }
+        
         // Redirect to their profile/feed
         router.push('/profiles/me');
       } else {

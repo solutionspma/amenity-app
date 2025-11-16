@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { ProfileInitService } from '@/lib/services/profile-init';
+import { PostService } from '@/lib/services/post-service';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -45,6 +47,12 @@ export default function LoginPage() {
           localStorage.setItem('amenity_signed_in', 'true');
           localStorage.setItem('amenity_user_email', email);
           localStorage.setItem('amenity_user_id', 'demo-user-id');
+          
+          // Initialize profile with user's email
+          ProfileInitService.initializeProfile('demo-user-id', email);
+          
+          // Auto-follow master user
+          PostService.autoFollowAdmin();
         }
         
         setTimeout(() => {

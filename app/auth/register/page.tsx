@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { ProfileInitService } from '@/lib/services/profile-init';
+import { PostService } from '@/lib/services/post-service';
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -55,10 +57,31 @@ export default function RegisterPage() {
       // TODO: Implement Supabase registration
       console.log('Registration attempt:', formData);
       
+      // Set up user session
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('amenity_signed_in', 'true');
+        localStorage.setItem('amenity_user_email', formData.email);
+        localStorage.setItem('amenity_user_id', 'demo-user-id');
+        
+        // Initialize profile with user's data
+        const fullName = `${formData.firstName} ${formData.lastName}`.trim();
+        const profile = ProfileInitService.initializeProfile('demo-user-id', formData.email);
+        
+        // Update with registration data
+        profile.name = fullName || profile.name;
+        if (formData.accountType === 'church' && formData.churchName) {
+          profile.name = formData.churchName;
+        }
+        localStorage.setItem('amenity_profile_backup', JSON.stringify(profile));
+        
+        // Auto-follow master user
+        PostService.autoFollowAdmin();
+      }
+      
       // Simulate registration for now
       setTimeout(() => {
         setIsLoading(false);
-        router.push('/feed');
+        router.push('/profiles/me');
       }, 2000);
       
     } catch (error) {
