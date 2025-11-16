@@ -248,6 +248,7 @@ export class ImageUploadService {
    * Get stored profile image
    */
   static getProfileImage(userId: string): string | null {
+    if (typeof window === 'undefined') return null;
     const storageKey = `amenity_profile_image_${userId}`;
     return localStorage.getItem(storageKey);
   }
@@ -256,6 +257,7 @@ export class ImageUploadService {
    * Get stored cover image
    */
   static getCoverImage(userId: string): string | null {
+    if (typeof window === 'undefined') return null;
     const storageKey = `amenity_cover_image_${userId}`;
     return localStorage.getItem(storageKey);
   }
@@ -264,6 +266,7 @@ export class ImageUploadService {
    * Delete profile image
    */
   static deleteProfileImage(userId: string): void {
+    if (typeof window === 'undefined') return;
     const storageKey = `amenity_profile_image_${userId}`;
     localStorage.removeItem(storageKey);
   }
@@ -272,6 +275,7 @@ export class ImageUploadService {
    * Delete cover image
    */
   static deleteCoverImage(userId: string): void {
+    if (typeof window === 'undefined') return;
     const storageKey = `amenity_cover_image_${userId}`;
     localStorage.removeItem(storageKey);
   }

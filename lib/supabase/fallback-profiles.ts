@@ -28,6 +28,8 @@ export class FallbackProfileService {
     try {
       await new Promise(resolve => setTimeout(resolve, 100)); // Simulate API delay
       
+      if (typeof window === 'undefined') return null;
+      
       const savedProfile = localStorage.getItem('amenity_profile_backup');
       if (savedProfile) {
         return JSON.parse(savedProfile);
@@ -46,6 +48,8 @@ export class FallbackProfileService {
   static async updateProfile(userId: string, profileData: Partial<ProfileData>): Promise<boolean> {
     try {
       await new Promise(resolve => setTimeout(resolve, 200)); // Simulate API delay
+      
+      if (typeof window === 'undefined') return false;
       
       localStorage.setItem('amenity_profile_backup', JSON.stringify(profileData));
       console.log('Profile saved to localStorage via fallback service');

@@ -62,14 +62,27 @@ export default function ProfileClient({ id }: { id: string }) {
         const uploadedProfileImage = ImageUploadService.getProfileImage(userId);
         const uploadedCoverImage = ImageUploadService.getCoverImage(userId);
 
-        // Mock data for now
+        // Load saved profile data from localStorage
+        let savedProfileData: any = null;
+        if (typeof window !== 'undefined') {
+          const savedProfile = localStorage.getItem('amenity_profile_backup');
+          if (savedProfile) {
+            try {
+              savedProfileData = JSON.parse(savedProfile);
+            } catch (e) {
+              console.error('Error parsing saved profile:', e);
+            }
+          }
+        }
+
+        // Mock data for now - use saved data if available
         const mockProfile: UserProfile = {
           id: id,
-          name: id === 'me' ? 'Your Profile' : `User ${id}`,
-          username: id === 'me' ? '@yourhandle' : `@user${id}`,
-          bio: id === 'me' 
+          name: savedProfileData?.name || (id === 'me' ? 'Your Profile' : `User ${id}`),
+          username: savedProfileData?.username || (id === 'me' ? '@yourhandle' : `@user${id}`),
+          bio: savedProfileData?.bio || (id === 'me' 
             ? 'Welcome to your Amenity profile! Connect, create, and grow your community. ✨ Living my best life on the platform!' 
-            : 'Sharing life moments and connecting with amazing people on Amenity. 🌟 Content creator | Lifestyle | Faith',
+            : 'Sharing life moments and connecting with amazing people on Amenity. 🌟 Content creator | Lifestyle | Faith'),
           avatar: uploadedProfileImage || '/logos/altar-life-logo.png',
           coverImage: uploadedCoverImage || '/images/default-cover.jpg',
           followers: Math.floor(Math.random() * 10000) + 1000,
@@ -77,8 +90,8 @@ export default function ProfileClient({ id }: { id: string }) {
           posts: Math.floor(Math.random() * 500) + 50,
           verified: Math.random() > 0.3,
           joinDate: 'January 2024',
-          location: 'New York, NY',
-          website: 'amenityapp.com',
+          location: savedProfileData?.location || 'New York, NY',
+          website: savedProfileData?.website || 'amenityapp.com',
           isFollowing: Math.random() > 0.5
         };
 

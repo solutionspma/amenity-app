@@ -86,6 +86,8 @@ export class EnhancedAdminSecurity {
       checksum: this.generateChecksum(JSON.stringify(admins))
     };
 
+    if (typeof window === 'undefined') return;
+
     // Store in multiple locations for redundancy
     this.BACKUP_STORAGE_KEYS.forEach((key, index) => {
       try {
