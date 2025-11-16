@@ -18,20 +18,24 @@ export default function AmenityHeader({
   className = "",
   showAuth = true
 }: AmenityHeaderProps) {
+  const MASTER_USER_ID = 'demo-user-id'; // Pastor Marcus Johnson - master account
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [profileImage, setProfileImage] = useState<string>('');
   const [isSignedIn, setIsSignedIn] = useState(false);
+  const [isMasterUser, setIsMasterUser] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
     // Check for user profile image and auth status
-    const userId = 'demo-user-id';
+    const userId = localStorage.getItem('amenity_user_id') || 'demo-user-id';
     const userImage = ImageUploadService.getProfileImage(userId);
     const authStatus = localStorage.getItem('amenity_signed_in') === 'true';
+    const masterStatus = userId === MASTER_USER_ID;
     
     if (userImage) setProfileImage(userImage);
     setIsSignedIn(authStatus);
+    setIsMasterUser(masterStatus);
 
     // Add keyboard shortcut for search (Cmd+K / Ctrl+K)
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -48,15 +52,35 @@ export default function AmenityHeader({
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [isSearchOpen]);
 
-  const navItems = [
-    { href: '/feed', label: 'Feed', icon: '📱' },
-    { href: '/live', label: 'Live', icon: '🔴' },
-    { href: '/shorts', label: 'Shorts', icon: '⚡' },
-    { href: '/marketplace', label: 'Store', icon: '🛒' },
-    { href: '/messages', label: 'Messages', icon: '💬' },
-    { href: '/creator', label: 'Creator Channels', icon: '✨' },
-    { href: '/svg-ya', label: 'SVG-YA', icon: '🎨' }
-  ];
+  // Navigation items - conditionally show based on auth and page
+  const getNavItems = () => {
+    const isHomepage = currentPage === '/' || currentPage === '';
+    
+    // Landing page nav (not signed in)
+    if (isHomepage && !isSignedIn) {
+      return [];
+    }
+    
+    // Signed in nav
+    const items = [
+      { href: '/feed', label: 'Feed', icon: '📱' },
+      { href: '/live', label: 'Live', icon: '🔴' },
+      { href: '/shorts', label: 'Shorts', icon: '⚡' },
+      { href: '/marketplace', label: 'Store', icon: '🛒' },
+      { href: '/messages', label: 'Messages', icon: '💬' },
+      { href: '/creator', label: 'Creator Channels', icon: '✨' },
+      { href: '/svg-ya', label: 'SVG-YA', icon: '🎨' }
+    ];
+    
+    // Add Modularity Engine for master user only
+    if (isMasterUser) {
+      items.push({ href: '/modularity-engine/', label: 'Modularity', icon: '🔧' });
+    }
+    
+    return items;
+  };
+  
+  const navItems = getNavItems();
 
   return (
     <nav className={`amenity-navigation amenity-component bg-black/50 backdrop-blur-sm border-b border-gray-700 sticky top-0 z-50 ${className}`}>
@@ -122,20 +146,24 @@ export default function AmenityHeader({
               <>
                 {!isSignedIn ? (
                   <>
-                    {/* Auth Buttons for non-signed in users */}
-                    <Link
-                      href="/auth/login"
-                      className="text-gray-300 hover:text-white transition-colors"
-                    >
-                      Sign In
-                    </Link>
-                    
-                    <Link
-                      href="/auth/register"
-                      className="bg-yellow-500 hover:bg-yellow-600 dark:bg-yellow-400 dark:hover:bg-yellow-500 text-black px-3 py-2 md:px-4 md:py-2 rounded-lg font-semibold transition-all text-sm md:text-base"
-                    >
-                      Join Now
-                    </Link>
+                    {/* Auth Buttons - only show on homepage for non-signed in users */}
+                    {(currentPage === '/' || currentPage === '') && (
+                      <>
+                        <Link
+                          href="/auth/login"
+                          className="text-gray-300 hover:text-white transition-colors"
+                        >
+                          Sign In
+                        </Link>
+                        
+                        <Link
+                          href="/auth/register"
+                          className="bg-yellow-500 hover:bg-yellow-600 dark:bg-yellow-400 dark:hover:bg-yellow-500 text-black px-3 py-2 md:px-4 md:py-2 rounded-lg font-semibold transition-all text-sm md:text-base"
+                        >
+                          Join Now
+                        </Link>
+                      </>
+                    )}
                   </>
                 ) : (
                   <>

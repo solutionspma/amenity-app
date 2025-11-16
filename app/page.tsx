@@ -1,14 +1,41 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import AmenityHeader from '@/components/AmenityHeader';
 import AmenityFooter from '@/components/AmenityFooter';
 import { useBackdrop } from '@/contexts/BackdropContext';
 
 export default function Home() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isChecking, setIsChecking] = useState(true);
   const { getBackdropStyle } = useBackdrop();
+  const router = useRouter();
+
+  useEffect(() => {
+    // Check if user is signed in
+    if (typeof window !== 'undefined') {
+      const signedIn = localStorage.getItem('amenity_signed_in') === 'true';
+      if (signedIn) {
+        // Redirect to their profile/feed
+        router.push('/profiles/me');
+      } else {
+        setIsChecking(false);
+      }
+    }
+  }, [router]);
+
+  if (isChecking) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-black to-pink-900 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-white mx-auto mb-4"></div>
+          <p className="text-white">Loading Amenity Platform...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div 

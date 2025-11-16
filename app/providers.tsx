@@ -29,12 +29,19 @@ if (typeof window !== 'undefined') {
 }
 
 export function Providers({ children }: { children: React.ReactNode }) {
+  const MASTER_USER_ID = 'demo-user-id'; // Pastor Marcus Johnson - master account
   const [isAdmin, setIsAdmin] = React.useState(false);
 
   React.useEffect(() => {
-    // Check admin status on mount
+    if (typeof window === 'undefined') return;
+    
+    // Check if current user is the master user
+    const currentUserId = localStorage.getItem('amenity_user_id');
+    const isMasterUser = currentUserId === MASTER_USER_ID;
+    
+    // Also check admin security system
     EnhancedAdminSecurity.checkAdminStatus().then(status => {
-      setIsAdmin(status.isAdmin);
+      setIsAdmin(status.isAdmin || isMasterUser);
     });
   }, []);
 
