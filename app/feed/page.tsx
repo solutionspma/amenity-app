@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useBackdrop } from '@/contexts/BackdropContext';
 import AmenityHeader from '@/components/AmenityHeader';
 import AmenityFooter from '@/components/AmenityFooter';
+import { PostService, type Post as ServicePost } from '@/lib/services/post-service';
 
 interface Post {
   id: string;
@@ -37,67 +38,51 @@ export default function FeedPage() {
   const { getBackdropStyle } = useBackdrop();
 
   useEffect(() => {
-    // Mock data for now - will be replaced with real API calls
-    const mockPosts: Post[] = [
-      {
-        id: '1',
-        author: {
-          name: 'Pastor Marcus Johnson',
-          avatar: '/api/placeholder/40/40',
-          verified: true,
-          type: 'pastor'
-        },
-        content: "Sunday's message on faith and perseverance really touched my heart. Remember, God's timing is perfect, even when we can't see the bigger picture. Keep pushing forward! 🙏",
-        timestamp: '2 hours ago',
-        likes: 127,
-        comments: 23,
-        shares: 8,
-        prayers: 45,
-        isLiked: true,
-        isPrayed: true,
-        tags: ['faith', 'perseverance', 'Sunday']
+    // Load real posts from your profile (admin user)
+    // These will be shown to everyone as the global feed
+    const globalPosts = PostService.getGlobalFeed();
+    
+    // Convert to feed format
+    const feedPosts: Post[] = globalPosts.map(post => ({
+      id: post.id,
+      author: {
+        name: post.authorName,
+        avatar: post.authorAvatar,
+        verified: true,
+        type: 'pastor' as const
       },
-      {
-        id: '2',
-        author: {
-          name: 'Grace Community Church',
-          avatar: '/api/placeholder/40/40',
-          verified: true,
-          type: 'church'
-        },
-        content: "🔴 LIVE NOW: Join us for our Wednesday night Bible study! Tonight we're diving deep into Romans 8. Link in bio to watch live!",
-        media: [{
-          type: 'image',
-          url: '/api/placeholder/600/400'
-        }],
-        timestamp: '15 minutes ago',
-        likes: 89,
-        comments: 12,
-        shares: 34,
-        prayers: 78,
-        isLiked: false,
-        isPrayed: true,
-        tags: ['live', 'biblestudy', 'romans']
-      },
-      {
-        id: '3',
-        author: {
-          name: 'Sarah Williams',
-          avatar: '/api/placeholder/40/40',
-          verified: false,
-          type: 'individual'
-        },
-        content: "Prayer Request: My family is going through a difficult time with my father's health. Please keep us in your prayers. Your support means everything. ❤️",
-        timestamp: '4 hours ago',
-        likes: 156,
-        comments: 47,
-        shares: 12,
-        prayers: 203,
-        isLiked: true,
-        isPrayed: true,
-        tags: ['prayerrequest', 'family', 'health']
-      }
-    ];
+      content: post.content,
+      media: post.image ? [{
+        type: 'image' as const,
+        url: post.image
+      }] : undefined,
+      timestamp: formatTimestamp(post.timestamp),
+      likes: post.likes,
+      comments: post.comments,
+      shares: post.shares,
+      prayers: 0,
+      isLiked: post.liked || false,
+      isPrayed: false,
+      tags: []
+    }));
+
+    setPosts(feedPosts);
+  }, []);
+
+  const formatTimestamp = (isoString: string): string => {
+    const date = new Date(isoString);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    if (diffMins < 1) return 'Just now';
+    if (diffMins < 60) return `${diffMins} minute${diffMins > 1 ? 's' : ''} ago`;
+    if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+    if (diffDays < 7) return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+    return date.toLocaleDateString();
+  };
     
     setPosts(mockPosts);
   }, []);
