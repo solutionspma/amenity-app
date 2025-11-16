@@ -1,5 +1,3 @@
-'use client';
-
 import { Inter } from 'next/font/google';
 import { Providers } from './providers';
 import Navigation from '@/components/Navigation';
@@ -8,6 +6,11 @@ import { ToastContainer } from '@/components/ui/Toast';
 import './globals.css';
 
 const inter = Inter({ subsets: ['latin'] });
+
+export const metadata = {
+  title: 'Amenity Platform - Faith-Based Social Network',
+  description: 'The complete faith ecosystem. Social network, video platform, livestreaming, marketplace, and more.',
+};
 
 export default function RootLayout({
   children,
