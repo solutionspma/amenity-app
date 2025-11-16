@@ -61,3 +61,6 @@ mobile/web-build/
 /temp/
 /tmp/
 node_modules
+*.zip
+**/logos/pitch-ball-logo.png
+**/logos/pmslogo.png
