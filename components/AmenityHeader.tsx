@@ -24,6 +24,7 @@ export default function AmenityHeader({
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
     // Check for user profile image and auth status
     const userId = 'demo-user-id';
     const userImage = ImageUploadService.getProfileImage(userId);

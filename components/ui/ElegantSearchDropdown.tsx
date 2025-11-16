@@ -51,6 +51,7 @@ export default function ElegantSearchDropdown({ isOpen, onClose, onNavigate }: E
   }, [isOpen]);
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
     // Load recent searches from localStorage
     const saved = localStorage.getItem('amenity_recent_searches');
     if (saved) {
@@ -84,9 +85,11 @@ export default function ElegantSearchDropdown({ isOpen, onClose, onNavigate }: E
 
   const handleResultClick = (result: SearchResult) => {
     // Add to recent searches
-    const newRecents = [result.title, ...recentSearches.filter(r => r !== result.title)].slice(0, 5);
+        const newRecents = [query, ...recentSearches.filter(s => s !== query)].slice(0, 5);
     setRecentSearches(newRecents);
-    localStorage.setItem('amenity_recent_searches', JSON.stringify(newRecents));
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('amenity_recent_searches', JSON.stringify(newRecents));
+    }
     
     // Navigate
     if (onNavigate) {
@@ -106,7 +109,9 @@ export default function ElegantSearchDropdown({ isOpen, onClose, onNavigate }: E
   const clearRecent = (recent: string) => {
     const newRecents = recentSearches.filter(r => r !== recent);
     setRecentSearches(newRecents);
-    localStorage.setItem('amenity_recent_searches', JSON.stringify(newRecents));
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('amenity_recent_searches', JSON.stringify(newRecents));
+    }
   };
 
   const getResultIcon = (type: string) => {

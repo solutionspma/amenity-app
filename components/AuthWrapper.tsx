@@ -31,7 +31,7 @@ export default function AuthWrapper({
           const userData = await authCheck.json();
           setIsAuthenticated(true);
           setIsAdmin(userData.isAdmin || userData.role === 'admin');
-        } else {
+        } else if (typeof window !== 'undefined') {
           // Mock authentication for development
           const mockAuth = localStorage.getItem('amenity_auth');
           const mockUser = localStorage.getItem('amenity_user');
@@ -45,14 +45,16 @@ export default function AuthWrapper({
       } catch (error) {
         console.warn('Auth check failed, using mock auth');
         
-        // Fallback to localStorage mock
-        const mockAuth = localStorage.getItem('amenity_auth');
-        const mockUser = localStorage.getItem('amenity_user');
-        
-        if (mockAuth && mockUser) {
-          const user = JSON.parse(mockUser);
-          setIsAuthenticated(true);
-          setIsAdmin(user.role === 'admin' || user.isAdmin);
+        if (typeof window !== 'undefined') {
+          // Fallback to localStorage mock
+          const mockAuth = localStorage.getItem('amenity_auth');
+          const mockUser = localStorage.getItem('amenity_user');
+          
+          if (mockAuth && mockUser) {
+            const user = JSON.parse(mockUser);
+            setIsAuthenticated(true);
+            setIsAdmin(user.role === 'admin' || user.isAdmin);
+          }
         }
       } finally {
         setIsLoading(false);
@@ -135,13 +137,17 @@ export const mockLogin = (email: string, password: string, isAdmin = false) => {
     avatar: '/logos/pitch-ball-logo.png'
   };
 
-  localStorage.setItem('amenity_auth', 'mock_token');
-  localStorage.setItem('amenity_user', JSON.stringify(userData));
+  if (typeof window !== 'undefined') {
+    localStorage.setItem('amenity_auth', 'mock_token');
+    localStorage.setItem('amenity_user', JSON.stringify(userData));
+  }
   
   return userData;
 };
 
 export const mockLogout = () => {
-  localStorage.removeItem('amenity_auth');
-  localStorage.removeItem('amenity_user');
+  if (typeof window !== 'undefined') {
+    localStorage.removeItem('amenity_auth');
+    localStorage.removeItem('amenity_user');
+  }
 };

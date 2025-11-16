@@ -28,10 +28,12 @@ export default function LoginPage() {
       
       if (adminAuth) {
         // Admin login successful
-        localStorage.setItem('amenity_signed_in', 'true');
-        localStorage.setItem('amenity_user_email', email);
-        localStorage.setItem('amenity_user_id', 'admin-user');
-        localStorage.setItem('amenity_admin', 'true');
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('amenity_signed_in', 'true');
+          localStorage.setItem('amenity_user_email', email);
+          localStorage.setItem('amenity_user_id', 'admin-user');
+          localStorage.setItem('amenity_admin', 'true');
+        }
         
         setTimeout(() => {
           setIsLoading(false);
@@ -39,9 +41,11 @@ export default function LoginPage() {
         }, 1500);
       } else if (email && password.length >= 6) {
         // Regular user login
-        localStorage.setItem('amenity_signed_in', 'true');
-        localStorage.setItem('amenity_user_email', email);
-        localStorage.setItem('amenity_user_id', 'demo-user-id');
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('amenity_signed_in', 'true');
+          localStorage.setItem('amenity_user_email', email);
+          localStorage.setItem('amenity_user_id', 'demo-user-id');
+        }
         
         setTimeout(() => {
           setIsLoading(false);
