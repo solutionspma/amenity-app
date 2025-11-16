@@ -44,6 +44,7 @@ export const BackdropProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   // Load settings from localStorage on mount
   useEffect(() => {
+    if (typeof window === 'undefined') return;
     const savedGlobal = localStorage.getItem('amenity_global_backdrop');
     const savedPages = localStorage.getItem('amenity_page_backdrops');
     
@@ -66,13 +67,17 @@ export const BackdropProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   const updateGlobalBackdrop = (settings: BackdropSettings) => {
     setGlobalBackdrop(settings);
-    localStorage.setItem('amenity_global_backdrop', JSON.stringify(settings));
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('amenity_global_backdrop', JSON.stringify(settings));
+    }
   };
 
   const updatePageBackdrop = (page: string, settings: BackdropSettings) => {
     const newPageBackdrops = { ...pageBackdrops, [page]: settings };
     setPageBackdrops(newPageBackdrops);
-    localStorage.setItem('amenity_page_backdrops', JSON.stringify(newPageBackdrops));
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('amenity_page_backdrops', JSON.stringify(newPageBackdrops));
+    }
   };
 
   const getBackdropForPage = (page: string): BackdropSettings => {

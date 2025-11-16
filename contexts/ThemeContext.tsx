@@ -18,6 +18,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const [actualTheme, setActualTheme] = useState<'light' | 'dark'>('dark');
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
     // Load theme from localStorage on mount
     const savedTheme = localStorage.getItem('amenity-theme') as Theme;
     if (savedTheme) {
@@ -31,6 +32,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
     // Save theme to localStorage
     localStorage.setItem('amenity-theme', theme);
 
@@ -50,6 +52,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   }, [theme]);
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
     // Listen for system theme changes
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     const handleChange = () => {

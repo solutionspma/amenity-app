@@ -71,6 +71,7 @@ export const ElementProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   // Load elements from localStorage on mount
   useEffect(() => {
+    if (typeof window === 'undefined') return;
     const savedElements = localStorage.getItem('amenity_component_elements');
     if (savedElements) {
       try {
@@ -92,6 +93,7 @@ export const ElementProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   // Save elements to localStorage when they change
   useEffect(() => {
+    if (typeof window === 'undefined') return;
     localStorage.setItem('amenity_component_elements', JSON.stringify(elements));
   }, [elements]);
 
