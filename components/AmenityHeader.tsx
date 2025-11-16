@@ -24,6 +24,7 @@ export default function AmenityHeader({
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [isMasterUser, setIsMasterUser] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -170,24 +171,67 @@ export default function AmenityHeader({
                     {/* Signed in state */}
                     <span className="text-green-400 text-sm hidden md:block">● Signed In</span>
                     
-                    {/* Profile Link - shows uploaded image or avatar */}
-                    <Link
-                      href="/profiles/me"
-                      className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-600 to-blue-600 flex items-center justify-center text-white font-bold hover:scale-105 transition-transform ring-2 ring-purple-400/30 hover:ring-purple-300/50"
-                      style={{
-                        boxShadow: '0 0 15px rgba(147, 51, 234, 0.3)'
-                      }}
-                    >
-                      {profileImage ? (
-                        <img
-                          src={profileImage}
-                          alt="Profile"
-                          className="w-full h-full rounded-full object-cover"
-                        />
-                      ) : (
-                        'U'
+                    {/* Profile Dropdown */}
+                    <div className="relative">
+                      <button
+                        onClick={() => setShowProfileMenu(!showProfileMenu)}
+                        className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-600 to-blue-600 flex items-center justify-center text-white font-bold hover:scale-105 transition-transform ring-2 ring-purple-400/30 hover:ring-purple-300/50"
+                        style={{
+                          boxShadow: '0 0 15px rgba(147, 51, 234, 0.3)'
+                        }}
+                      >
+                        {profileImage ? (
+                          <img
+                            src={profileImage}
+                            alt="Profile"
+                            className="w-full h-full rounded-full object-cover"
+                          />
+                        ) : (
+                          'U'
+                        )}
+                      </button>
+                      
+                      {/* Dropdown Menu */}
+                      {showProfileMenu && (
+                        <div className="absolute right-0 mt-2 w-56 bg-gray-900 border border-gray-700 rounded-lg shadow-xl overflow-hidden z-50">
+                          <Link
+                            href="/profiles/me"
+                            className="flex items-center space-x-3 px-4 py-3 text-gray-300 hover:bg-gray-800 hover:text-white transition-colors"
+                            onClick={() => setShowProfileMenu(false)}
+                          >
+                            <span className="text-xl">👤</span>
+                            <span>My Profile</span>
+                          </Link>
+                          <Link
+                            href="/profiles/settings"
+                            className="flex items-center space-x-3 px-4 py-3 text-gray-300 hover:bg-gray-800 hover:text-white transition-colors"
+                            onClick={() => setShowProfileMenu(false)}
+                          >
+                            <span className="text-xl">⚙️</span>
+                            <span>Settings</span>
+                          </Link>
+                          {isMasterUser && (
+                            <Link
+                              href="/admin/master-control"
+                              className="flex items-center space-x-3 px-4 py-3 text-purple-400 hover:bg-purple-900/20 hover:text-purple-300 transition-colors border-t border-gray-700"
+                              onClick={() => setShowProfileMenu(false)}
+                            >
+                              <span className="text-xl">👑</span>
+                              <span>Master Control</span>
+                            </Link>
+                          )}
+                          <div className="border-t border-gray-700">
+                            <button
+                              onClick={handleLogout}
+                              className="flex items-center space-x-3 px-4 py-3 text-red-400 hover:bg-red-900/20 hover:text-red-300 transition-colors w-full text-left"
+                            >
+                              <span className="text-xl">🚪</span>
+                              <span>Sign Out</span>
+                            </button>
+                          </div>
+                        </div>
                       )}
-                    </Link>
+                    </div>
                   </>
                 )}
               </>
@@ -235,13 +279,30 @@ export default function AmenityHeader({
                     <span>Profile</span>
                   </Link>
                   <Link
-                    href="/admin/master-control"
-                    className="flex items-center space-x-3 px-4 py-2 rounded-lg text-gray-300 hover:bg-purple-600/20 hover:text-purple-400 transition-colors"
+                    href="/profiles/settings"
+                    className="flex items-center space-x-3 px-4 py-2 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     <span>⚙️</span>
-                    <span>Admin</span>
+                    <span>Settings</span>
                   </Link>
+                  {isMasterUser && (
+                    <Link
+                      href="/admin/master-control"
+                      className="flex items-center space-x-3 px-4 py-2 rounded-lg text-purple-400 hover:bg-purple-600/20 hover:text-purple-300 transition-colors"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      <span>👑</span>
+                      <span>Master Control</span>
+                    </Link>
+                  )}
+                  <button
+                    onClick={handleLogout}
+                    className="flex items-center space-x-3 px-4 py-2 rounded-lg text-red-400 hover:bg-red-900/20 hover:text-red-300 transition-colors w-full text-left"
+                  >
+                    <span>🚪</span>
+                    <span>Sign Out</span>
+                  </button>
                 </>
               )}
             </div>
