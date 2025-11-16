@@ -35,7 +35,23 @@ export default function FeedPage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [newPost, setNewPost] = useState('');
   const [activeTab, setActiveTab] = useState<'following' | 'discover' | 'live'>('following');
+  const [userProfile, setUserProfile] = useState<any>(null);
   const { getBackdropStyle } = useBackdrop();
+
+  // Load user profile data
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    
+    const savedProfile = localStorage.getItem('amenity_profile_backup');
+    if (savedProfile) {
+      try {
+        const parsed = JSON.parse(savedProfile);
+        setUserProfile(parsed);
+      } catch (e) {
+        console.error('Error parsing profile:', e);
+      }
+    }
+  }, []);
 
   useEffect(() => {
     // Load real posts from your profile (admin user)
@@ -131,24 +147,32 @@ export default function FeedPage() {
             {/* Profile Card */}
             <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20">
               <div className="text-center">
-                <div className="w-16 h-16 rounded-full bg-gradient-to-r from-yellow-400 to-orange-500 flex items-center justify-center text-black font-bold text-xl mx-auto mb-4">
-                  M
-                </div>
-                <h3 className="text-white font-bold">Pastor Marcus Johnson</h3>
-                <p className="text-gray-400 text-sm">Senior Pastor</p>
-                <p className="text-gray-400 text-sm">Faith Community Church</p>
+                {userProfile?.profileImage ? (
+                  <img 
+                    src={userProfile.profileImage} 
+                    alt={userProfile?.name || 'Profile'} 
+                    className="w-16 h-16 rounded-full mx-auto mb-4 object-cover"
+                  />
+                ) : (
+                  <div className="w-16 h-16 rounded-full bg-gradient-to-r from-yellow-400 to-orange-500 flex items-center justify-center text-black font-bold text-xl mx-auto mb-4">
+                    {(userProfile?.name || 'U').charAt(0).toUpperCase()}
+                  </div>
+                )}
+                <h3 className="text-white font-bold">{userProfile?.name || 'Your Profile'}</h3>
+                {userProfile?.bio && <p className="text-gray-400 text-sm mt-1">{userProfile.bio}</p>}
+                {userProfile?.location && <p className="text-gray-400 text-sm">{userProfile.location}</p>}
                 
                 <div className="mt-4 grid grid-cols-3 gap-2 text-center">
                   <div>
-                    <div className="text-white font-bold">1.2K</div>
+                    <div className="text-white font-bold">{userProfile?.stats?.followers || 0}</div>
                     <div className="text-gray-400 text-xs">Followers</div>
                   </div>
                   <div>
-                    <div className="text-white font-bold">847</div>
+                    <div className="text-white font-bold">{userProfile?.stats?.following || 0}</div>
                     <div className="text-gray-400 text-xs">Following</div>
                   </div>
                   <div>
-                    <div className="text-white font-bold">156</div>
+                    <div className="text-white font-bold">{userProfile?.stats?.posts || 0}</div>
                     <div className="text-gray-400 text-xs">Posts</div>
                   </div>
                 </div>
