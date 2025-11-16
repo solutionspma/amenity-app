@@ -1,6 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Netlify configuration with API routes
+  // Conditional output based on build vs dev
+  ...(process.env.NODE_ENV === 'production' && process.env.BUILD_STATIC === 'true' ? {
+    output: 'export',
+    trailingSlash: true,
+  } : {}),
   images: {
     domains: [
       'via.placeholder.com',

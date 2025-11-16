@@ -16,24 +16,17 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="h-full">
-      <body className={`${inter.className} h-full bg-amenity-50 dark:bg-amenity-900`}>
+      <body className={`${inter.className} h-full`}>
         <Providers>
-          <div className="flex h-full">
-            {/* Desktop Navigation */}
-            <div className="hidden lg:flex lg:flex-shrink-0">
-              <Navigation />
-            </div>
+          <div className="min-h-full">
+            {/* Main Content - Full Width */}
+            <main className="min-h-screen">
+              {children}
+            </main>
             
-            {/* Main Content */}
-            <div className="flex-1 flex flex-col overflow-hidden">
-              <main className="flex-1 overflow-y-auto pb-16 lg:pb-0">
-                {children}
-              </main>
-              
-              {/* Mobile Navigation */}
-              <div className="lg:hidden">
-                <MobileNav />
-              </div>
+            {/* Mobile Navigation */}
+            <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50">
+              <MobileNav />
             </div>
           </div>
           

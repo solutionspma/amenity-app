@@ -1,0 +1,38 @@
+{
+  "name": "Classroom",
+  "type": "classroom",
+  "description": "Educational space for Sunday School and Bible classes",
+  "modelPath": "/models/rooms/classroom.glb",
+  "capacity": 30,
+  "spawnPoint": {
+    "position": [0, 1.6, -8],
+    "rotation": [0, 0, 0]
+  },
+  "lighting": {
+    "ambient": [0.8, 0.8, 0.75],
+    "spotlights": [
+      {
+        "position": [0, 5, 0],
+        "direction": [0, -1, 0],
+        "intensity": 1.0,
+        "color": [1.0, 1.0, 0.95]
+      }
+    ]
+  },
+  "acoustics": {
+    "reverb": 0.2,
+    "absorption": 0.6,
+    "description": "Clear speech acoustics"
+  },
+  "atmosphere": {
+    "fogMode": false,
+    "skyColor": [0.98, 0.98, 0.95]
+  },
+  "interactables": [
+    "desks",
+    "chairs",
+    "whiteboard",
+    "markers",
+    "books"
+  ]
+}

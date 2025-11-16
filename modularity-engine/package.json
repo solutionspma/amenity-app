@@ -1,0 +1,59 @@
+{
+  "name": "modularity-spatial-os",
+  "version": "3.0.0",
+  "description": "The Faith-Based AR/VR Platform Built on WebXR & Babylon.js - Atomic Edition",
+  "main": "src/main.js",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "build:all": "npm run build:engine && npm run build:rooms && npm run build:furniture && npm run build:sdk && npm run build:creator-tools && npm run bundle",
+    "build:engine": "cd packages/modularity-engine && npm run build",
+    "build:rooms": "cd packages/modularity-room-pack && npm run build",
+    "build:furniture": "cd packages/modularity-furniture-pack && npm run build",
+    "build:sdk": "cd packages/amenity-spatial-sdk && npm run build",
+    "build:creator-tools": "cd packages/modularity-creator-tools && npm run build",
+    "bundle": "node scripts/createMasterBundle.js",
+    "package": "npm run build:all && node scripts/packageAll.js"
+  },
+  "keywords": [
+    "xr",
+    "webxr",
+    "vr",
+    "ar",
+    "babylon",
+    "spatial",
+    "faith-tech",
+    "church",
+    "ministry",
+    "3d",
+    "immersive"
+  ],
+  "author": "Jason Harris <devpartners@amenity.church>",
+  "license": "MIT",
+  "dependencies": {
+    "@babylonjs/core": "^7.24.0",
+    "@babylonjs/gui": "^7.24.0",
+    "@babylonjs/loaders": "^7.24.0",
+    "@babylonjs/materials": "^7.24.0",
+    "@supabase/supabase-js": "^2.39.0",
+    "ethers": "^6.10.0",
+    "three": "^0.181.1",
+    "tone": "^14.7.77",
+    "webxr-polyfill": "^2.0.3"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-basic-ssl": "^1.0.2",
+    "vite": "^5.0.11"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/solutionspma/modularity-spatial-os"
+  },
+  "homepage": "https://amenity.church/modularity",
+  "bugs": {
+    "url": "https://github.com/solutionspma/modularity-spatial-os/issues",
+    "email": "devpartners@amenity.church"
+  }
+}

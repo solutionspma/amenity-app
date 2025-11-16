@@ -1,0 +1,73 @@
+{
+  "roomId": "prayer-circle",
+  "name": "Prayer Circle Room",
+  "description": "Sacred space for prayer and meditation",
+  "capacity": 12,
+  "category": "spiritual",
+  "dimensions": {
+    "width": 8,
+    "length": 8,
+    "height": 4
+  },
+  "lighting": {
+    "ambient": {
+      "intensity": 0.3,
+      "color": [1, 0.95, 0.8]
+    },
+    "candles": [
+      { "position": [2, 1, 2], "intensity": 0.5, "flicker": true },
+      { "position": [-2, 1, 2], "intensity": 0.5, "flicker": true },
+      { "position": [2, 1, -2], "intensity": 0.5, "flicker": true },
+      { "position": [-2, 1, -2], "intensity": 0.5, "flicker": true }
+    ],
+    "mood": "peaceful"
+  },
+  "acoustics": {
+    "reverb": {
+      "decay": 2.0,
+      "preDelay": 0.01,
+      "wet": 0.3
+    },
+    "eq": {
+      "low": 0,
+      "mid": 2,
+      "high": 1
+    },
+    "description": "Intimate acoustic space for spoken prayer"
+  },
+  "atmosphere": {
+    "fogMode": false,
+    "ambientSound": "gentle_wind.mp3"
+  },
+  "spawnPoints": [
+    { "position": [0, 0, -3], "rotation": [0, 0, 0], "label": "Entrance" }
+  ],
+  "interactionZones": [
+    {
+      "type": "prayer_circle",
+      "position": [0, 0, 0],
+      "radius": 3,
+      "actions": ["join_circle", "pray", "hold_hands"],
+      "shader": "prayer_circle_holy_glow"
+    }
+  ],
+  "features": [
+    "circular_seating",
+    "central_cross",
+    "prayer_candles",
+    "soft_cushions",
+    "holy_books",
+    "incense_burner"
+  ],
+  "specialEffects": {
+    "holyGlow": {
+      "enabled": true,
+      "color": [1, 0.95, 0.8],
+      "intensity": 1.0,
+      "pulsing": true
+    },
+    "portalEffect": {
+      "enabled": false
+    }
+  }
+}

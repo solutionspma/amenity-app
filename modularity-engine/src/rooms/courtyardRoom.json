@@ -1,0 +1,38 @@
+{
+  "name": "Prayer Courtyard",
+  "type": "courtyard",
+  "description": "Peaceful outdoor garden for prayer and meditation",
+  "modelPath": "/models/rooms/courtyard.glb",
+  "capacity": 50,
+  "spawnPoint": {
+    "position": [0, 0.1, -8],
+    "rotation": [0, 0, 0]
+  },
+  "lighting": {
+    "ambient": [0.9, 0.95, 1.0],
+    "spotlights": [
+      {
+        "position": [0, 20, 10],
+        "direction": [0, -0.7, -0.3],
+        "intensity": 1.5,
+        "color": [1.0, 0.98, 0.9]
+      }
+    ]
+  },
+  "acoustics": {
+    "reverb": 0.4,
+    "absorption": 0.7,
+    "description": "Natural outdoor acoustics with gentle ambience"
+  },
+  "atmosphere": {
+    "fogMode": true,
+    "fogDensity": 0.005,
+    "skyColor": [0.6, 0.8, 1.0]
+  },
+  "interactables": [
+    "benches",
+    "fountain",
+    "plants",
+    "prayer_stones"
+  ]
+}

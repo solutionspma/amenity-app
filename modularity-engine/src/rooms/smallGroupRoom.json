@@ -1,0 +1,37 @@
+{
+  "name": "Small Group Room",
+  "type": "smallGroup",
+  "description": "Intimate space for small group Bible studies and discussions",
+  "modelPath": "/models/rooms/smallGroup.glb",
+  "capacity": 12,
+  "spawnPoint": {
+    "position": [0, 1.6, -5],
+    "rotation": [0, 0, 0]
+  },
+  "lighting": {
+    "ambient": [0.6, 0.55, 0.5],
+    "spotlights": [
+      {
+        "position": [0, 4, 0],
+        "direction": [0, -1, 0],
+        "intensity": 0.8,
+        "color": [1.0, 0.95, 0.85]
+      }
+    ]
+  },
+  "acoustics": {
+    "reverb": 0.3,
+    "absorption": 0.5,
+    "description": "Warm, conversational acoustics"
+  },
+  "atmosphere": {
+    "fogMode": false,
+    "skyColor": [0.95, 0.92, 0.88]
+  },
+  "interactables": [
+    "chairs",
+    "table",
+    "bibles",
+    "coffee_mugs"
+  ]
+}

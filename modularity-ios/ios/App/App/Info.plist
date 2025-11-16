@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en</string>
+	<key>CFBundleDisplayName</key>
+	<string>Modularity OS</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>$(PRODUCT_NAME)</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>3.0</string>
+	<key>CFBundleVersion</key>
+	<string>1</string>
+	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>UILaunchStoryboardName</key>
+	<string>LaunchScreen</string>
+	<key>UIMainStoryboardFile</key>
+	<string>Main</string>
+	<key>UIRequiredDeviceCapabilities</key>
+	<array>
+		<string>armv7</string>
+		<string>arkit</string>
+	</array>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+	<key>UISupportedInterfaceOrientations~ipad</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationPortraitUpsideDown</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<true/>
+	
+	<!-- CAMERA PERMISSION -->
+	<key>NSCameraUsageDescription</key>
+	<string>Camera access is required for AR experiences. Place church spaces and studios in your real environment.</string>
+	
+	<!-- MOTION & ORIENTATION PERMISSION -->
+	<key>NSMotionUsageDescription</key>
+	<string>Motion sensors are required for VR head tracking and immersive experiences.</string>
+	
+	<!-- ARKIT CAPABILITY -->
+	<key>arkit</key>
+	<true/>
+	
+	<!-- ALLOW MICROPHONE (for future voice chat) -->
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Microphone access enables voice chat and spatial audio features.</string>
+	
+	<!-- PHOTO LIBRARY (for saving AR captures) -->
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Save photos and videos of your AR/VR experiences to your photo library.</string>
+	
+	<!-- LOCATION (optional - for location-based AR) -->
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Location access enables location-based AR features and world anchors.</string>
+	
+	<!-- BLUETOOTH (for future multiplayer/controllers) -->
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>Bluetooth enables wireless controllers and multiplayer features.</string>
+	
+	<!-- BACKGROUND MODES (for AR sessions) -->
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>audio</string>
+	</array>
+	
+	<!-- ALLOW HTTP (for local dev server) -->
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+		<key>NSAllowsLocalNetworking</key>
+		<true/>
+	</dict>
+</dict>
+</plist>

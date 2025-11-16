@@ -1,0 +1,74 @@
+{
+  "roomId": "sanctuary",
+  "name": "Sanctuary",
+  "description": "Full auditorium for worship services and large gatherings",
+  "capacity": 500,
+  "category": "worship",
+  "dimensions": {
+    "width": 40,
+    "length": 60,
+    "height": 12
+  },
+  "lighting": {
+    "ambient": {
+      "intensity": 0.5,
+      "color": [1, 0.98, 0.95]
+    },
+    "spotlights": [
+      {
+        "position": [0, 10, 20],
+        "target": [0, 0, 0],
+        "intensity": 2.0,
+        "angle": 45
+      }
+    ],
+    "mood": "reverent"
+  },
+  "acoustics": {
+    "reverb": {
+      "decay": 3.5,
+      "preDelay": 0.02,
+      "wet": 0.4
+    },
+    "eq": {
+      "low": 2,
+      "mid": 0,
+      "high": -1
+    },
+    "description": "Cathedral-like reverb for hymns and sermons"
+  },
+  "atmosphere": {
+    "fogMode": true,
+    "fogDensity": 0.005,
+    "fogColor": [0.9, 0.9, 0.95]
+  },
+  "spawnPoints": [
+    { "position": [0, 0, -25], "rotation": [0, 0, 0], "label": "Main Entrance" },
+    { "position": [-15, 0, -20], "rotation": [0, 0, 0], "label": "Left Aisle" },
+    { "position": [15, 0, -20], "rotation": [0, 0, 0], "label": "Right Aisle" }
+  ],
+  "interactionZones": [
+    {
+      "type": "altar",
+      "position": [0, 0, 25],
+      "radius": 5,
+      "actions": ["pray", "kneel", "receive_blessing"]
+    },
+    {
+      "type": "podium",
+      "position": [0, 1.2, 22],
+      "radius": 2,
+      "actions": ["preach", "teach", "lead_worship"]
+    }
+  ],
+  "features": [
+    "seating_rows",
+    "altar",
+    "podium",
+    "choir_loft",
+    "baptismal_font",
+    "stained_glass",
+    "cross",
+    "candles"
+  ]
+}

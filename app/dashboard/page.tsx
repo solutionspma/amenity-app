@@ -1,11 +1,16 @@
+'use client';
+
 import AIAssistantDashboard from '@/components/AIAssistantDashboard';
-import Navigation from '@/components/Navigation';
-import MobileNav from '@/components/MobileNav';
+import AmenityHeader from '@/components/AmenityHeader';
+import AmenityFooter from '@/components/AmenityFooter';
+import { useBackdrop } from '@/contexts/BackdropContext';
 
 export default function CreatorDashboard() {
+  const { getBackdropStyle } = useBackdrop();
+  
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Navigation />
+    <div className="min-h-screen" style={getBackdropStyle('dashboard')}>
+      <AmenityHeader currentPage="/dashboard" />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
@@ -134,7 +139,7 @@ export default function CreatorDashboard() {
         </div>
       </div>
 
-      <MobileNav />
+      <AmenityFooter />
     </div>
   );
 }

@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modularity Spatial OS - Developer Partnership Program</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            padding: 100px 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.1) 0%, transparent 50%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .hero h2 {
+            font-size: 1.8rem;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 1rem;
+            animation: fadeInUp 1s ease-out 0.2s;
+            animation-fill-mode: backwards;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-top: 1.5rem;
+            opacity: 0.95;
+            animation: fadeInUp 1s ease-out 0.4s;
+            animation-fill-mode: backwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .cta-button {
+            display: inline-block;
+            margin-top: 2rem;
+            padding: 18px 40px;
+            background: white;
+            color: #667eea;
+            font-size: 1.2rem;
+            font-weight: 700;
+            text-decoration: none;
+            border-radius: 50px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            animation: fadeInUp 1s ease-out 0.6s;
+            animation-fill-mode: backwards;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 50px rgba(0,0,0,0.3);
+        }
+
+        /* Section Styles */
+        section {
+            padding: 100px 20px;
+            background: white;
+        }
+
+        section:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        section h2 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            color: #667eea;
+            text-align: center;
+        }
+
+        section h3 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 2rem 0 1rem;
+            color: #764ba2;
+        }
+
+        section p {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+            color: #555;
+        }
+
+        section ul {
+            list-style: none;
+            margin: 2rem 0;
+        }
+
+        section li {
+            font-size: 1.2rem;
+            padding: 12px 0;
+            padding-left: 40px;
+            position: relative;
+            color: #444;
+        }
+
+        section li::before {
+            content: '✔';
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+
+        /* Tech Stack Grid */
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 3rem 0;
+        }
+
+        .tech-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .tech-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.2);
+        }
+
+        .tech-card h4 {
+            font-size: 1.5rem;
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        .tech-card p {
+            font-size: 1.1rem;
+            color: #666;
+            margin: 0;
+        }
+
+        /* Hardware Grid */
+        .hardware-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin: 3rem 0;
+        }
+
+        .hardware-item {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: 600;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            transition: transform 0.3s ease;
+        }
+
+        .hardware-item:hover {
+            transform: scale(1.05);
+        }
+
+        /* Rooms Showcase */
+        .rooms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin: 3rem 0;
+        }
+
+        .room-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .room-card:hover {
+            border-color: #667eea;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+        }
+
+        .room-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .room-card h4 {
+            font-size: 1.4rem;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .room-card p {
+            font-size: 1rem;
+            color: #777;
+            margin: 0;
+        }
+
+        /* Benefits Grid */
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin: 3rem 0;
+        }
+
+        .benefit-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 35px;
+            border-radius: 15px;
+            border-left: 5px solid #667eea;
+        }
+
+        .benefit-card h4 {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .benefit-card p {
+            font-size: 1.1rem;
+            color: #555;
+            margin: 0;
+        }
+
+        /* Contact Section */
+        .contact {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+        }
+
+        .contact h2 {
+            color: white;
+        }
+
+        .contact-info {
+            margin: 3rem 0;
+            font-size: 1.3rem;
+        }
+
+        .contact-info p {
+            color: rgba(255,255,255,0.95);
+            margin: 1rem 0;
+        }
+
+        .contact-info a {
+            color: white;
+            text-decoration: none;
+            font-weight: 700;
+            border-bottom: 2px solid white;
+            transition: opacity 0.3s ease;
+        }
+
+        .contact-info a:hover {
+            opacity: 0.8;
+        }
+
+        .contact-cta {
+            display: inline-block;
+            margin-top: 2rem;
+            padding: 20px 50px;
+            background: white;
+            color: #667eea;
+            font-size: 1.3rem;
+            font-weight: 700;
+            text-decoration: none;
+            border-radius: 50px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+        }
+
+        .contact-cta:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 50px rgba(0,0,0,0.4);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero h2 {
+                font-size: 1.3rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            section h2 {
+                font-size: 2.2rem;
+            }
+
+            .tech-grid,
+            .hardware-grid,
+            .rooms-grid,
+            .benefits-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <div class="hero">
+        <div class="hero-content">
+            <h1>Modularity Spatial OS</h1>
+            <h2>The Faith-Based AR/VR Platform Built on WebXR & Babylon.js</h2>
+            <p>A next-generation immersive environment designed for multi-platform XR hardware.</p>
+            <a href="#contact" class="cta-button">Partner With Us</a>
+        </div>
+    </div>
+
+    <!-- What Is Modularity Section -->
+    <section id="about">
+        <div class="container">
+            <h2>What Is Modularity?</h2>
+            <p>
+                Modularity is a full AR/VR spatial environment for spiritual gatherings, 
+                education, small groups, creator studios, and interactive community engagement.
+            </p>
+            <p>
+                We're building the future of faith-based immersive experiences, combining 
+                cutting-edge XR technology with meaningful spiritual community features.
+            </p>
+
+            <h3>Built With</h3>
+            <ul>
+                <li>WebXR - Universal cross-platform XR support</li>
+                <li>Babylon.js - High-performance 3D rendering engine</li>
+                <li>Supabase real-time - Live synchronization and database</li>
+                <li>AI Avatar systems - Intelligent virtual presence</li>
+                <li>Spatial audio - Immersive 3D sound environments</li>
+                <li>AR hit-testing - Real-world integration</li>
+                <li>VR locomotion - Natural movement and navigation</li>
+                <li>Room-based 3D environments - Purpose-built spiritual spaces</li>
+                <li>Creator tools for churches - Empower faith communities</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Hardware Needs Section -->
+    <section id="hardware">
+        <div class="container">
+            <h2>Why We Need Your Hardware</h2>
+            <p>
+                To finalize cross-platform XR support, we require hardware for device calibration, 
+                real-world performance testing, and feature optimization.
+            </p>
+
+            <h3>Testing Requirements</h3>
+            <div class="tech-grid">
+                <div class="tech-card">
+                    <h4>Device Calibration</h4>
+                    <p>Ensure accurate tracking and positioning across different XR platforms</p>
+                </div>
+                <div class="tech-card">
+                    <h4>Performance Testing</h4>
+                    <p>Optimize rendering and frame rates for each device's capabilities</p>
+                </div>
+                <div class="tech-card">
+                    <h4>AR Hit-Testing</h4>
+                    <p>Validate real-world surface detection and object placement</p>
+                </div>
+                <div class="tech-card">
+                    <h4>Spatial Mapping</h4>
+                    <p>Test environment understanding and mesh generation</p>
+                </div>
+                <div class="tech-card">
+                    <h4>Controller Input</h4>
+                    <p>Perfect gesture recognition and interaction systems</p>
+                </div>
+                <div class="tech-card">
+                    <h4>Hand-Tracking</h4>
+                    <p>Optimize natural hand gesture performance and accuracy</p>
+                </div>
+            </div>
+
+            <h3>Supported Device Targets</h3>
+            <div class="hardware-grid">
+                <div class="hardware-item">Meta Quest</div>
+                <div class="hardware-item">Apple Vision Pro</div>
+                <div class="hardware-item">HTC Vive</div>
+                <div class="hardware-item">Pico Neo</div>
+                <div class="hardware-item">XREAL / Nreal Air</div>
+                <div class="hardware-item">Magic Leap</div>
+            </div>
+
+            <h3>Your Device Will Be Featured In:</h3>
+            <ul>
+                <li>Engine documentation and integration guides</li>
+                <li>Video demonstrations and tutorials</li>
+                <li>User onboarding experiences</li>
+                <li>Platform presentations and showcases</li>
+                <li>Marketing collateral and promotional materials</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Tech Stack Section -->
+    <section id="tech">
+        <div class="container">
+            <h2>Core Technical Stack</h2>
+            
+            <div class="tech-grid">
+                <div class="tech-card">
+                    <h4>🎮 Engine</h4>
+                    <p>Modularity XR Engine (Custom WebXR Framework)</p>
+                </div>
+                <div class="tech-card">
+                    <h4>🎨 Rendering</h4>
+                    <p>Babylon.js 7.x - High-performance 3D graphics</p>
+                </div>
+                <div class="tech-card">
+                    <h4>🔮 Runtime</h4>
+                    <p>WebXR / WebGL2 - Cross-platform compatibility</p>
+                </div>
+                <div class="tech-card">
+                    <h4>🎧 Audio</h4>
+                    <p>Spatial audio routing with Tone.js integration</p>
+                </div>
+                <div class="tech-card">
+                    <h4>🌐 Networking</h4>
+                    <p>Supabase Realtime - Live multi-user sync</p>
+                </div>
+                <div class="tech-card">
+                    <h4>👤 Avatars</h4>
+                    <p>GLB-based humanoids with AI generation</p>
+                </div>
+                <div class="tech-card">
+                    <h4>🛠️ Tools</h4>
+                    <p>Creator Mode / Admin Mode / Processor Extensions</p>
+                </div>
+                <div class="tech-card">
+                    <h4>📦 Packaging</h4>
+                    <p>Multi-product SDK for churches & enterprises</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Rooms Section -->
+    <section id="rooms">
+        <div class="container">
+            <h2>The Modularity Rooms</h2>
+            <p>
+                Purpose-built 3D environments designed for different spiritual and community activities.
+                Each room is optimized for its specific use case with appropriate acoustics, lighting, and spatial design.
+            </p>
+
+            <div class="rooms-grid">
+                <div class="room-card">
+                    <div class="room-icon">⛪</div>
+                    <h4>Sanctuary</h4>
+                    <p>Full auditorium for worship services and large gatherings</p>
+                </div>
+                <div class="room-card">
+                    <div class="room-icon">🏠</div>
+                    <h4>Small Group Room</h4>
+                    <p>Intimate living room setting for Bible studies</p>
+                </div>
+                <div class="room-card">
+                    <div class="room-icon">🙏</div>
+                    <h4>Prayer Circle Room</h4>
+                    <p>Sacred space for prayer and meditation</p>
+                </div>
+                <div class="room-card">
+                    <div class="room-icon">🎮</div>
+                    <h4>Youth Room</h4>
+                    <p>Modern neon-lit environment for young believers</p>
+                </div>
+                <div class="room-card">
+                    <div class="room-icon">📚</div>
+                    <h4>Classroom</h4>
+                    <p>Educational space for Christian teaching</p>
+                </div>
+                <div class="room-card">
+                    <div class="room-icon">🎵</div>
+                    <h4>Creative Studio</h4>
+                    <p>Professional audio and media production facility</p>
+                </div>
+                <div class="room-card">
+                    <div class="room-icon">🎭</div>
+                    <h4>Community Hall</h4>
+                    <p>Multipurpose venue for events and activities</p>
+                </div>
+                <div class="room-card">
+                    <div class="room-icon">🌳</div>
+                    <h4>Courtyard</h4>
+                    <p>Outdoor spiritual reflection space</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Developer Benefits Section -->
+    <section id="benefits">
+        <div class="container">
+            <h2>Developer Partnership Benefits</h2>
+            
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <h4>🏆 Preferred Partner Status</h4>
+                    <p>Featured as the official XR hardware partner for Modularity Spatial OS and the Amenity.Church platform</p>
+                </div>
+                <div class="benefit-card">
+                    <h4>📚 Integration Documentation</h4>
+                    <p>Comprehensive inclusion in all platform documentation, developer guides, and integration tutorials</p>
+                </div>
+                <div class="benefit-card">
+                    <h4>🎯 XR Hardware Spotlight</h4>
+                    <p>Prominent hardware showcase within the Modularity platform interface and promotional materials</p>
+                </div>
+                <div class="benefit-card">
+                    <h4>⛪ Faith-Tech Market Access</h4>
+                    <p>Beta access to the spiritual technology sector with millions of potential users worldwide</p>
+                </div>
+                <div class="benefit-card">
+                    <h4>🚀 Market Penetration</h4>
+                    <p>Direct access to churches, ministries, and faith-based organizations seeking XR solutions</p>
+                </div>
+                <div class="benefit-card">
+                    <h4>🤝 Engineering Collaboration</h4>
+                    <p>Direct line to our engineering and outreach team for co-development opportunities</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2>Let's Build the Future Together</h2>
+            <p style="font-size: 1.4rem; margin: 2rem 0;">
+                Ready to pioneer the future of faith-based XR experiences?
+            </p>
+
+            <div class="contact-info">
+                <p><strong>Jason Harris</strong></p>
+                <p>Founder – Amenity.Church & Pitch Modular Spaces</p>
+                <p style="margin-top: 2rem;">
+                    <strong>Phone:</strong> <a href="tel:+12254188858">225-418-8858</a>
+                </p>
+                <p>
+                    <strong>Email:</strong> <a href="mailto:devpartners@amenity.church">devpartners@amenity.church</a>
+                </p>
+            </div>
+
+            <a href="mailto:devpartners@amenity.church" class="contact-cta">Start Partnership Discussion</a>
+        </div>
+    </section>
+
+    <script>
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add scroll animation for sections
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('section').forEach(section => {
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(50px)';
+            section.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>

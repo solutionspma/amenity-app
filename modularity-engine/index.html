@@ -1,0 +1,1256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modularity Spatial OS v3.0 - The Atomic Edition</title>
+    
+    <!-- Babylon.js CDN -->
+    <script src="https://cdn.babylonjs.com/babylon.js"></script>
+    <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
+    
+    <!-- Google Model Viewer for iOS AR Quick Look -->
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0f;
+            color: white;
+            overflow: hidden;
+        }
+
+        #renderCanvas {
+            width: 100%;
+            height: 100vh;
+            display: block;
+            touch-action: none;
+        }
+
+        #ui-overlay {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        #ui-overlay h1 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        #ui-overlay p {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 15px;
+        }
+
+        .mode-switcher {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+
+        .mode-btn {
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 700;
+            transition: all 0.3s;
+        }
+
+        .mode-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: #667eea;
+            color: white;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .mode-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        #loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0a0a0f;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            z-index: 2000;
+        }
+
+        #loading h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        #status {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Mobile Touch Controls */
+        .mobile-controls {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 250px;
+            pointer-events: none;
+            z-index: 100;
+            display: none;
+        }
+
+        @media (max-width: 768px), (hover: none) {
+            .mobile-controls {
+                display: block;
+            }
+        }
+
+        .joystick {
+            position: absolute;
+            bottom: 30px;
+            left: 30px;
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle, rgba(102, 126, 234, 0.3), rgba(118, 75, 162, 0.3));
+            border-radius: 50%;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            pointer-events: all;
+        }
+
+        .joystick-stick {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.1s ease;
+        }
+
+        .action-buttons {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            width: 180px;
+            height: 180px;
+            pointer-events: all;
+        }
+
+        .action-btn {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: 3px solid rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            color: white;
+            font-weight: 700;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            user-select: none;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.1s ease;
+        }
+
+        .action-btn:active {
+            transform: scale(0.9);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-a { top: 60px; right: 0; }
+        .btn-b { top: 120px; right: 60px; }
+        .btn-c { top: 60px; left: 0; }
+        .btn-d { top: 0; right: 60px; }
+
+        #network-info {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            z-index: 200;
+        }
+
+        /* Hamburger Menu Toggle */
+        #nav-toggle {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 50px;
+            height: 50px;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            cursor: pointer;
+            z-index: 1100;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+        }
+
+        #nav-toggle:hover {
+            background: rgba(102, 126, 234, 0.3);
+            border-color: #667eea;
+            transform: scale(1.05);
+        }
+
+        #nav-toggle:active {
+            transform: scale(0.95);
+        }
+
+        .nav-bar {
+            width: 30px;
+            height: 3px;
+            background: white;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        #nav-toggle.active .nav-bar:nth-child(1) {
+            transform: rotate(45deg) translateY(9px);
+        }
+
+        #nav-toggle.active .nav-bar:nth-child(2) {
+            opacity: 0;
+        }
+
+        #nav-toggle.active .nav-bar:nth-child(3) {
+            transform: rotate(-45deg) translateY(-9px);
+        }
+
+        #ui-overlay {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-origin: top left;
+        }
+
+        #ui-overlay.hidden {
+            transform: translateX(-120%);
+            opacity: 0;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading">
+        <h2>Modularity Spatial OS v3.0</h2>
+        <div class="spinner" id="loading-spinner"></div>
+        <p id="status">Initializing...</p>
+        <button id="start-button" style="margin-top: 20px; padding: 15px 40px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 50px; font-size: 1.1rem; font-weight: 700; cursor: pointer; display: none;">
+            🚀 Click to Start
+        </button>
+    </div>
+
+    <!-- Main Canvas -->
+    <canvas id="renderCanvas"></canvas>
+
+    <!-- AR Model Viewer (iOS Quick Look Compatible) -->
+    <model-viewer 
+        id="ar-viewer"
+        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: 9999;"
+        camera-controls 
+        ar 
+        ar-modes="webxr scene-viewer quick-look"
+        shadow-intensity="1"
+        auto-rotate
+        ios-src="">
+        <button slot="ar-button" id="ar-activate-button" style="display: none;">View in AR</button>
+    </model-viewer>
+
+    <!-- Mobile Touch Controls -->
+    <div class="mobile-controls">
+        <div class="joystick" id="joystick">
+            <div class="joystick-stick" id="joystick-stick"></div>
+        </div>
+        <div class="action-buttons">
+            <div class="action-btn btn-a" id="btn-a">A</div>
+            <div class="action-btn btn-b" id="btn-b">B</div>
+            <div class="action-btn btn-c" id="btn-c">C</div>
+            <div class="action-btn btn-d" id="btn-d">D</div>
+        </div>
+    </div>
+
+    <!-- Network Info -->
+    <div id="network-info">
+        📱 Mobile Access<br>
+        Local: https://localhost:3001<br>
+        Network: <span id="network-url">Loading...</span>
+    </div>
+
+    <!-- Hamburger Menu Toggle -->
+    <div id="nav-toggle">
+        <div class="nav-bar"></div>
+        <div class="nav-bar"></div>
+        <div class="nav-bar"></div>
+    </div>
+
+    <!-- UI Overlay -->
+    <div id="ui-overlay" class="hidden">
+        <h1>🔮 Modularity Spatial OS</h1>
+        <p>The Atomic Edition - Faith-Based AR/VR Platform</p>
+        <p style="font-size: 0.75rem; color: #667eea;">🌐 SpatialSpace Unified Engine Active</p>
+        
+        <!-- MODE SWITCHER -->
+        <div class="mode-switcher">
+            <button id="mode-church" class="mode-btn active" onclick="switchToChurch()">⛪ Church Spaces</button>
+            <button id="mode-studio" class="mode-btn" onclick="switchToStudio()">🎬 Studio Complex</button>
+        </div>
+        
+        <!-- SPATIALSPACE CONTROLS -->
+        <div class="button-group" style="margin-bottom: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;">
+            <button onclick="enableMultiplayer()">🌐 Multiplayer</button>
+            <button onclick="createAvatar()">👤 Create Avatar</button>
+            <button onclick="enterARMode()">📱 AR Mode</button>
+            <button onclick="enterVRMode()">🥽 VR Mode</button>
+        </div>
+        
+        <!-- CHURCH ROOMS (Babylon.js) -->
+        <div id="church-buttons" class="button-group">
+            <button class="home-btn" onclick="returnHome()">🏠 Home</button>
+            <button onclick="enterVR()">🥽 Enter VR</button>
+            <button onclick="enterAR()">📱 Enter AR</button>
+            <button onclick="birthAvatar()">👤 Birth Avatar</button>
+            <button onclick="toggleFirstPerson()">📷 Toggle Camera</button>
+            <button onclick="loadRoom('sanctuaryRoom')">⛪ Sanctuary</button>
+            <button onclick="loadRoom('prayerCircleRoom')">🙏 Prayer Circle</button>
+            <button onclick="loadRoom('youthRoom')">🎸 Youth Room</button>
+            <button onclick="loadRoom('smallGroupRoom')">👥 Small Group</button>
+            <button onclick="loadRoom('classroomRoom')">📚 Classroom</button>
+            <button onclick="loadRoom('studioRoom')">🎙️ Studio</button>
+            <button onclick="loadRoom('fellowshipHall')">🏛️ Fellowship Hall</button>
+            <button onclick="loadRoom('courtyardRoom')">🌳 Courtyard</button>
+            <button onclick="toggleCreatorMode()">🎨 Creator Mode</button>
+        </div>
+        
+        <!-- STUDIO COMPLEX (Three.js) -->
+        <div id="studio-buttons" class="button-group hidden">
+            <button onclick="loadStudioScene('complex')">🏢 Studio Complex</button>
+            <button onclick="loadStudioScene('recording')">🎙️ Recording Studio</button>
+            <button onclick="loadStudioScene('tv')">📺 TV Studio</button>
+            <button onclick="loadStudioScene('hallway')">🚪 Hallway</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div id="footer">
+        🔮 <strong>Modularity OS</strong> built in <strong>Modular Spaces</strong><br>
+        Powered by <a href="https://pitchmarketing.agency" target="_blank">Pitch Market Strategies & Public Relations LLC</a>
+    </div>
+
+    <!-- Floating Controls Toggle -->
+    <button id="toggle-controls" onclick="toggleMobileControls()">🎮</button>
+
+    <!-- Main Application Script -->
+    <script type="module">
+        import ModularityOS from './src/main.js';
+        import * as Tone from 'tone';
+        import { Vector3 } from '@babylonjs/core/Maths/math.vector';
+        import { initSpatialSpace, loadDefaultModule, switchModule } from './src/spatialspace/index.js';
+
+        let modularityOS = null;
+        let spatialEngine = null;  // SpatialSpace unified engine
+        let creatorModeActive = false;
+        let localAvatar = null;
+        let firstPersonMode = true;
+        let useSpatialSpace = true; // Toggle to use new unified engine
+        
+        // Mobile controls state
+        let joystickActive = false;
+        let joystickDirection = { x: 0, y: 0 };
+
+        // Setup mobile touch controls
+        function setupMobileControls() {
+            const joystick = document.getElementById('joystick');
+            const stick = document.getElementById('joystick-stick');
+            const btnA = document.getElementById('btn-a');
+            const btnB = document.getElementById('btn-b');
+            const btnC = document.getElementById('btn-c');
+            const btnD = document.getElementById('btn-d');
+
+            // Joystick handling
+            const handleJoystickMove = (clientX, clientY) => {
+                const rect = joystick.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+                
+                let deltaX = clientX - centerX;
+                let deltaY = clientY - centerY;
+                
+                const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+                const maxDistance = 45;
+                
+                if (distance > maxDistance) {
+                    deltaX = (deltaX / distance) * maxDistance;
+                    deltaY = (deltaY / distance) * maxDistance;
+                }
+                
+                stick.style.transform = `translate(calc(-50% + ${deltaX}px), calc(-50% + ${deltaY}px))`;
+                
+                joystickDirection.x = deltaX / maxDistance;
+                joystickDirection.y = -deltaY / maxDistance;
+            };
+
+            const resetJoystick = () => {
+                stick.style.transform = 'translate(-50%, -50%)';
+                joystickDirection.x = 0;
+                joystickDirection.y = 0;
+                joystickActive = false;
+            };
+
+            joystick.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                joystickActive = true;
+                handleJoystickMove(e.touches[0].clientX, e.touches[0].clientY);
+            });
+
+            joystick.addEventListener('touchmove', (e) => {
+                e.preventDefault();
+                if (joystickActive) {
+                    handleJoystickMove(e.touches[0].clientX, e.touches[0].clientY);
+                }
+            });
+
+            joystick.addEventListener('touchend', resetJoystick);
+            joystick.addEventListener('touchcancel', resetJoystick);
+
+            // Action buttons with haptic feedback
+            const vibrate = () => {
+                if (navigator.vibrate) {
+                    navigator.vibrate(50);
+                }
+            };
+
+            btnA.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                vibrate();
+                console.log('Button A pressed');
+                window.loadRoom('sanctuaryRoom');
+            });
+
+            btnB.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                vibrate();
+                console.log('Button B pressed');
+                window.loadRoom('prayerCircleRoom');
+            });
+
+            btnC.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                vibrate();
+                console.log('Button C pressed');
+                window.birthAvatar();
+            });
+
+            btnD.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                vibrate();
+                console.log('Button D pressed');
+                window.toggleFirstPerson();
+            });
+
+            // Apply joystick movement to camera
+            setInterval(() => {
+                if (joystickActive && modularityOS && modularityOS.camera) {
+                    const speed = 0.15;
+                    const camera = modularityOS.camera;
+                    
+                    if (Math.abs(joystickDirection.y) > 0.1) {
+                        // Get forward direction from camera
+                        const forward = new Vector3(
+                            Math.sin(camera.alpha),
+                            0,
+                            Math.cos(camera.alpha)
+                        );
+                        camera.position.addInPlace(forward.scale(joystickDirection.y * speed));
+                    }
+                    
+                    if (Math.abs(joystickDirection.x) > 0.1) {
+                        // Get right direction (perpendicular to forward)
+                        const right = new Vector3(
+                            Math.cos(camera.alpha),
+                            0,
+                            -Math.sin(camera.alpha)
+                        );
+                        camera.position.addInPlace(right.scale(joystickDirection.x * speed));
+                    }
+                }
+            }, 16);
+        }
+
+        // ============================================
+        // ADVANCED MOBILE GESTURES
+        // ============================================
+        
+        function setupAdvancedGestures() {
+            const canvas = document.getElementById('renderCanvas');
+            
+            // Swipe detection for quick room switching
+            let touchStartX = 0;
+            let touchStartY = 0;
+            const swipeThreshold = 100;
+            
+            const rooms = ['sanctuaryRoom', 'prayerCircleRoom', 'youthRoom', 'smallGroupRoom', 'classroomRoom', 'studioRoom', 'fellowshipHall', 'courtyardRoom'];
+            let currentRoomIndex = 0;
+            
+            canvas.addEventListener('touchstart', (e) => {
+                if (e.touches.length === 1) {
+                    touchStartX = e.touches[0].clientX;
+                    touchStartY = e.touches[0].clientY;
+                }
+            });
+            
+            canvas.addEventListener('touchend', (e) => {
+                if (e.changedTouches.length === 1) {
+                    const touchEndX = e.changedTouches[0].clientX;
+                    const touchEndY = e.changedTouches[0].clientY;
+                    const deltaX = touchEndX - touchStartX;
+                    const deltaY = touchEndY - touchStartY;
+                    
+                    // Horizontal swipe for room switching
+                    if (Math.abs(deltaX) > swipeThreshold && Math.abs(deltaY) < 50) {
+                        if (navigator.vibrate) navigator.vibrate(30);
+                        
+                        if (deltaX > 0) {
+                            // Swipe right - next room
+                            currentRoomIndex = (currentRoomIndex + 1) % rooms.length;
+                            window.loadRoom(rooms[currentRoomIndex]);
+                            console.log('👉 Swiped to next room');
+                        } else {
+                            // Swipe left - previous room
+                            currentRoomIndex = (currentRoomIndex - 1 + rooms.length) % rooms.length;
+                            window.loadRoom(rooms[currentRoomIndex]);
+                            console.log('👈 Swiped to previous room');
+                        }
+                    }
+                }
+            });
+            
+            // Pinch to zoom camera radius
+            let lastPinchDistance = 0;
+            
+            canvas.addEventListener('touchmove', (e) => {
+                if (e.touches.length === 2 && modularityOS && modularityOS.camera) {
+                    e.preventDefault();
+                    
+                    const touch1 = e.touches[0];
+                    const touch2 = e.touches[1];
+                    
+                    const currentDistance = Math.hypot(
+                        touch2.clientX - touch1.clientX,
+                        touch2.clientY - touch1.clientY
+                    );
+                    
+                    if (lastPinchDistance > 0) {
+                        const delta = currentDistance - lastPinchDistance;
+                        const camera = modularityOS.camera;
+                        
+                        // Adjust camera radius (zoom in/out)
+                        camera.radius = Math.max(0.1, Math.min(50, camera.radius - delta * 0.05));
+                    }
+                    
+                    lastPinchDistance = currentDistance;
+                }
+            });
+            
+            canvas.addEventListener('touchend', () => {
+                lastPinchDistance = 0;
+            });
+            
+            // Double-tap to teleport to center
+            let lastTapTime = 0;
+            
+            canvas.addEventListener('touchend', (e) => {
+                const now = Date.now();
+                if (now - lastTapTime < 300 && modularityOS && modularityOS.camera) {
+                    // Double tap detected
+                    if (navigator.vibrate) navigator.vibrate([50, 50, 50]);
+                    
+                    modularityOS.camera.position.set(0, 1.6, -10);
+                    console.log('📍 Double-tap teleport to center');
+                }
+                lastTapTime = now;
+            });
+            
+            // Shake to reset view
+            if (window.DeviceMotionEvent) {
+                let lastShakeTime = 0;
+                
+                window.addEventListener('devicemotion', (e) => {
+                    const acceleration = e.accelerationIncludingGravity;
+                    const threshold = 20;
+                    
+                    if (acceleration && 
+                        (Math.abs(acceleration.x) > threshold || 
+                         Math.abs(acceleration.y) > threshold || 
+                         Math.abs(acceleration.z) > threshold)) {
+                        
+                        const now = Date.now();
+                        if (now - lastShakeTime > 1000) {
+                            lastShakeTime = now;
+                            
+                            if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+                            
+                            window.returnHome();
+                            console.log('📳 Shake detected - returning home');
+                        }
+                    }
+                });
+            }
+            
+            console.log('✅ Advanced gestures enabled: swipe, pinch, double-tap, shake');
+        }
+
+        // Display network URL for mobile access
+        function displayNetworkInfo() {
+            // Get network interfaces (showing what Vite displays)
+            const networkSpan = document.getElementById('network-url');
+            // Vite shows both 192.168.0.161 and 192.168.0.153
+            networkSpan.innerHTML = 'https://192.168.0.161:3001<br>or https://192.168.0.153:3001';
+        }
+
+        // Nav toggle with hamburger menu
+        const navToggle = document.getElementById('nav-toggle');
+        const uiOverlay = document.getElementById('ui-overlay');
+        let navOpen = false;
+
+        function toggleNav() {
+            navOpen = !navOpen;
+            navToggle.classList.toggle('active', navOpen);
+            uiOverlay.classList.toggle('hidden', !navOpen);
+            vibrate(50);
+        }
+
+        navToggle.addEventListener('click', toggleNav);
+        navToggle.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            toggleNav();
+        });
+
+        // Auto-collapse nav and footer
+        let lastMouseY = 0;
+        let navCollapsed = false;
+        let footerCollapsed = false;
+
+        function updateNavFooterVisibility() {
+            const nav = document.getElementById('ui-overlay');
+            const footer = document.getElementById('footer');
+            const threshold = 5;
+
+            if (lastMouseY > threshold && !navCollapsed) {
+                nav.classList.add('collapsed');
+                navCollapsed = true;
+            } else if (lastMouseY <= threshold && navCollapsed) {
+                nav.classList.remove('collapsed');
+                navCollapsed = false;
+            }
+
+            const footerThreshold = window.innerHeight - threshold;
+            if (lastMouseY < footerThreshold && !footerCollapsed) {
+                footer.classList.add('collapsed');
+                footerCollapsed = true;
+            } else if (lastMouseY >= footerThreshold && footerCollapsed) {
+                footer.classList.remove('collapsed');
+                footerCollapsed = false;
+            }
+        }
+
+        document.addEventListener('mousemove', (e) => {
+            lastMouseY = e.clientY;
+            updateNavFooterVisibility();
+        });
+
+        // Add touch support for mobile nav collapse
+        document.addEventListener('touchmove', (e) => {
+            if (e.touches.length > 0) {
+                lastMouseY = e.touches[0].clientY;
+                updateNavFooterVisibility();
+            }
+        });
+
+        document.addEventListener('touchstart', (e) => {
+            if (e.touches.length > 0) {
+                lastMouseY = e.touches[0].clientY;
+                updateNavFooterVisibility();
+            }
+        });
+
+        // Toggle mobile controls visibility
+        window.toggleMobileControls = () => {
+            const controls = document.querySelector('.mobile-controls');
+            if (controls.style.display === 'none') {
+                controls.style.display = 'block';
+                updateStatus('🎮 Mobile controls shown');
+            } else {
+                controls.style.display = 'none';
+                updateStatus('Mobile controls hidden');
+            }
+        };
+
+        // Return to home (sanctuary)
+        window.returnHome = async () => {
+            updateStatus('🏠 Returning home...');
+            
+            if (useSpatialSpace && spatialEngine) {
+                // Make sure we're in ModularityOS module
+                if (spatialEngine.router.getCurrentModule() !== 'modularityOS') {
+                    spatialEngine.switchModule('modularityOS');
+                }
+                // Load sanctuary
+                await loadRoom('sanctuary');
+            } else {
+                await loadRoom('sanctuaryRoom');
+                if (modularityOS && modularityOS.camera) {
+                    const Vector3 = window.BABYLON?.Vector3;
+                    if (Vector3) {
+                        modularityOS.camera.position.set(0, 1.6, -10);
+                        modularityOS.camera.setTarget(new Vector3(0, 2, 0));
+                    }
+                }
+            }
+            
+            updateStatus('✅ Welcome home!');
+        };
+
+        async function init() {
+            try {
+                if (useSpatialSpace) {
+                    // ============================================
+                    // NEW: SpatialSpace Unified Engine
+                    // ============================================
+                    
+                    // Wait for Babylon.js and Three.js to load
+                    updateStatus('Waiting for libraries to load...');
+                    await waitForLibraries();
+                    
+                    updateStatus('Initializing SpatialSpace Unified Engine...');
+                    console.log('🔮 Initializing SpatialSpace Unified Engine...');
+                    
+                    spatialEngine = initSpatialSpace();
+                    
+                    updateStatus('✅ SpatialSpace Ready!');
+                    console.log('✅ SpatialSpace Engine initialized!');
+                    
+                    // Show start button
+                    const startButton = document.getElementById('start-button');
+                    const spinner = document.getElementById('loading-spinner');
+                    spinner.style.display = 'none';
+                    startButton.style.display = 'block';
+                    
+                    startButton.onclick = async () => {
+                        console.log('🎵 User gesture detected, starting SpatialSpace...');
+                        
+                        // Unlock AudioContext with Tone.js
+                        try {
+                            await Tone.start();
+                            console.log('🎧 Tone.js AudioContext unlocked successfully');
+                        } catch (e) {
+                            console.warn('⚠️ Audio unlock failed (non-critical):', e);
+                        }
+                        
+                        // Load default module (ModularityOS church)
+                        loadDefaultModule();
+                        
+                        // Hide loading, show UI
+                        document.getElementById('loading').classList.add('hidden');
+                        document.getElementById('ui-overlay').classList.remove('hidden');
+                        
+                        console.log('🚀 SpatialSpace fully booted and running!');
+                        console.log('📦 Current module:', spatialEngine.router.getCurrentModule());
+                    };
+                    
+                } else {
+                    // ============================================
+                    // LEGACY: Original ModularityOS
+                    // ============================================
+                    updateStatus('Creating Modularity OS instance...');
+                    console.log('🔧 Creating ModularityOS instance...');
+                    
+                    modularityOS = new ModularityOS();
+                    
+                    updateStatus('Initializing engine systems...');
+                    console.log('⚙️ Initializing engine systems...');
+                    const success = await modularityOS.initialize('renderCanvas');
+
+                    if (success) {
+                        updateStatus('✅ Ready!');
+                        console.log('✅ ModularityOS initialized successfully!');
+                        
+                        // Show start button to enable audio + start render loop
+                        const startButton = document.getElementById('start-button');
+                        const spinner = document.getElementById('loading-spinner');
+                        spinner.style.display = 'none';
+                        startButton.style.display = 'block';
+                        
+                        console.log('🚀 Start button now visible - waiting for user gesture...');
+                        
+                        startButton.onclick = async () => {
+                            console.log('🎵 User gesture detected, starting audio + render...');
+                            
+                            // Unlock AudioContext with Tone.js
+                            try {
+                                await Tone.start();
+                                console.log('🎧 Tone.js AudioContext unlocked successfully');
+                            } catch (e) {
+                                console.warn('⚠️ Audio unlock failed (non-critical):', e);
+                            }
+                            
+                            // Start render loop
+                            modularityOS.engine.runRenderLoop(() => {
+                                if (modularityOS.scene) {
+                                    modularityOS.scene.render();
+                                }
+                            });
+                            console.log('🎬 Render loop started');
+                            
+                            // Load default room (Sanctuary)
+                            await loadRoom('sanctuaryRoom');
+                            
+                            // Hide loading, show UI
+                            document.getElementById('loading').classList.add('hidden');
+                            document.getElementById('ui-overlay').classList.remove('hidden');
+                            
+                            console.log('🚀 Modularity OS fully booted and running!');
+                        };
+
+                        // Log system info
+                        console.log('📊 System Info:', modularityOS.getInfo());
+
+                    } else {
+                        updateStatus('❌ Initialization failed');
+                        console.error('❌ ModularityOS.initialize() returned false');
+                        showStartButtonAnyway();
+                    }
+                }
+            } catch (error) {
+                console.error('❌ Fatal error during initialization:', error);
+                updateStatus('❌ Error: ' + error.message);
+                showStartButtonAnyway();
+            }
+        }
+        
+        function showStartButtonAnyway() {
+            const startButton = document.getElementById('start-button');
+            const spinner = document.getElementById('loading-spinner');
+            spinner.style.display = 'none';
+            startButton.style.display = 'block';
+            startButton.textContent = '⚠️ Start Anyway';
+            
+            startButton.onclick = () => {
+                document.getElementById('loading').classList.add('hidden');
+                document.getElementById('ui-overlay').classList.remove('hidden');
+            };
+        }
+
+        function updateStatus(message) {
+            document.getElementById('status').textContent = message;
+            console.log(message);
+        }
+        
+        // Wait for external libraries to load
+        async function waitForLibraries() {
+            const maxWait = 10000; // 10 seconds max
+            const startTime = Date.now();
+            
+            while (!window.BABYLON) {
+                if (Date.now() - startTime > maxWait) {
+                    console.error('❌ Timeout waiting for BABYLON');
+                    throw new Error('BABYLON failed to load');
+                }
+                
+                console.log('⏳ Waiting for BABYLON...', { 
+                    BABYLON: !!window.BABYLON
+                });
+                
+                await new Promise(resolve => setTimeout(resolve, 100));
+            }
+            
+            console.log('✅ BABYLON loaded successfully');
+        }
+
+        // Global functions for buttons
+        window.enterVR = async () => {
+            if (useSpatialSpace && spatialEngine) {
+                // Use SpatialSpace VR
+                window.enterVRMode();
+            } else if (modularityOS) {
+                const success = await modularityOS.enterVR();
+                if (!success) {
+                    console.log('VR not available - using desktop fallback mode');
+                    // Just dismiss - already in fallback mode
+                }
+            } else {
+                console.error('❌ No engine available');
+            }
+        };
+
+        window.enterAR = async () => {
+            if (useSpatialSpace && spatialEngine) {
+                // Use SpatialSpace AR
+                window.enterARMode();
+                return;
+            }
+            
+            // Legacy AR - Use model-viewer for iOS AR Quick Look compatibility
+            const arViewer = document.getElementById('ar-viewer');
+            const arButton = document.getElementById('ar-activate-button');
+            
+            // For now, show a placeholder GLB (we'll export current room later)
+            // This demonstrates iOS AR Quick Look working
+            arViewer.setAttribute('src', 'https://modelviewer.dev/shared-assets/models/Astronaut.glb');
+            arViewer.setAttribute('ios-src', 'https://modelviewer.dev/shared-assets/models/Astronaut.usdz');
+            
+            // Show model viewer overlay
+            arViewer.style.display = 'block';
+            
+            // Auto-trigger AR on iOS
+            setTimeout(() => {
+                arButton.click();
+            }, 500);
+            
+            // Add close button
+            arViewer.addEventListener('click', () => {
+                arViewer.style.display = 'none';
+            }, { once: true });
+            
+            console.log('📱 AR Quick Look activated for iOS');
+        };
+
+        window.loadRoom = async (roomName) => {
+            updateStatus(`Loading ${roomName}...`);
+            
+            if (useSpatialSpace && spatialEngine) {
+                // Use SpatialSpace - call SceneRouter's requestRoomSwitch
+                if (spatialEngine.router) {
+                    await spatialEngine.router.requestRoomSwitch(roomName);
+                    updateStatus('Room loaded!');
+                } else {
+                    console.error('❌ SceneRouter not available');
+                }
+            } else if (modularityOS) {
+                // Legacy mode
+                await modularityOS.loadRoom(roomName);
+                updateStatus('Room loaded!');
+            } else {
+                console.error('❌ No engine available');
+            }
+        };
+
+        window.toggleCreatorMode = () => {
+            if (useSpatialSpace) {
+                console.warn('⚠️ Creator Mode not yet implemented in SpatialSpace');
+                updateStatus('Creator Mode coming soon in SpatialSpace!');
+                return;
+            }
+            
+            if (!modularityOS) {
+                console.error('❌ ModularityOS not available');
+                return;
+            }
+            
+            if (creatorModeActive) {
+                modularityOS.deactivateCreatorMode();
+                creatorModeActive = false;
+                console.log('Creator Mode OFF');
+            } else {
+                modularityOS.activateCreatorMode();
+                creatorModeActive = true;
+                console.log('Creator Mode ON');
+            }
+        };
+
+        // ============================================
+        // STUDIO COMPLEX (Three.js) INTEGRATION
+        // ============================================
+        
+        let studioManager = null;
+        let currentMode = 'church'; // 'church' or 'studio'
+
+        window.switchToStudio = async () => {
+            console.log('🎬 Switching to Studio Complex (Three.js)...');
+            
+            if (useSpatialSpace && spatialEngine) {
+                // Use SpatialSpace unified engine
+                switchModule('studioComplex');
+                console.log('✅ SpatialSpace: Switched to Studio Complex module');
+            } else {
+                // Fallback to legacy method
+                // Stop Babylon rendering
+                if (modularityOS && modularityOS.engine) {
+                    modularityOS.engine.stopRenderLoop();
+                }
+                
+                // Initialize Studio if needed
+                if (!studioManager) {
+                    const { StudioManager } = await import('./src/studio/studioManager.js');
+                    studioManager = new StudioManager();
+                    await studioManager.initialize(document.getElementById('renderCanvas'));
+                }
+                
+                // Start Studio rendering
+                studioManager.start();
+            }
+            
+            // Update UI
+            document.getElementById('church-buttons').classList.add('hidden');
+            document.getElementById('studio-buttons').classList.remove('hidden');
+            document.getElementById('mode-church').classList.remove('active');
+            document.getElementById('mode-studio').classList.add('active');
+            
+            currentMode = 'studio';
+            console.log('✅ Now in Studio Complex mode');
+        };
+
+        window.switchToChurch = () => {
+            console.log('⛪ Switching to Church Spaces (Babylon.js)...');
+            
+            if (useSpatialSpace && spatialEngine) {
+                // Use SpatialSpace unified engine
+                switchModule('modularityOS');
+                console.log('✅ SpatialSpace: Switched to ModularityOS module');
+            } else {
+                // Fallback to legacy method
+                // Stop Studio rendering
+                if (studioManager) {
+                    studioManager.stop();
+                }
+                
+                // Resume Babylon rendering
+                if (modularityOS && modularityOS.engine && modularityOS.scene) {
+                    modularityOS.engine.runRenderLoop(() => {
+                        if (modularityOS.scene) {
+                            modularityOS.scene.render();
+                        }
+                    });
+                }
+            }
+            
+            // Update UI
+            document.getElementById('studio-buttons').classList.add('hidden');
+            document.getElementById('church-buttons').classList.remove('hidden');
+            document.getElementById('mode-studio').classList.remove('active');
+            document.getElementById('mode-church').classList.add('active');
+            
+            currentMode = 'church';
+            console.log('✅ Now in Church Spaces mode');
+        };
+
+        // ============================================
+        // SPATIALSPACE UNIFIED CONTROLS
+        // ============================================
+        
+        window.enableMultiplayer = () => {
+            if (!spatialEngine) {
+                console.warn('⚠️ SpatialSpace not initialized');
+                return;
+            }
+            
+            const serverURL = 'ws://localhost:8080';
+            spatialEngine.multi.connect(serverURL);
+            updateStatus('🌐 Connecting to multiplayer server...');
+            console.log('🌐 Multiplayer enabled');
+        };
+        
+        window.createAvatar = () => {
+            if (!spatialEngine || !spatialEngine.scene) {
+                console.warn('⚠️ SpatialSpace scene not loaded');
+                return;
+            }
+            
+            const avatar = spatialEngine.avatar.createLocalAvatar(spatialEngine.scene);
+            if (avatar) {
+                updateStatus('👤 Avatar created with full-body IK!');
+                console.log('👤 Local avatar created');
+            }
+        };
+        
+        window.enterARMode = () => {
+            if (!spatialEngine) {
+                console.warn('⚠️ SpatialSpace not initialized');
+                return;
+            }
+            
+            // Place a model in AR (auto-detect native or web)
+            spatialEngine.ar.placeModel('models/cross.usdz');
+            updateStatus('📱 Entering AR mode...');
+            console.log('📱 AR mode activated');
+        };
+        
+        window.enterVRMode = () => {
+            if (!spatialEngine) {
+                console.warn('⚠️ SpatialSpace not initialized');
+                return;
+            }
+            
+            if (spatialEngine.vr.isNativeAvailable) {
+                // Native VRKit (iOS app)
+                spatialEngine.vr.enterNativeVR();
+                updateStatus('🥽 Native VR mode activated!');
+            } else if (spatialEngine.scene && spatialEngine.camera) {
+                // JavaScript VR (Three.js)
+                spatialEngine.vr.initJSVR(spatialEngine.scene, spatialEngine.camera);
+                updateStatus('🥽 JavaScript VR mode activated!');
+            } else {
+                updateStatus('⚠️ VR not available');
+            }
+            console.log('🥽 VR mode activated');
+        };
+
+        window.loadStudioScene = (sceneName) => {
+            if (!studioManager) {
+                console.warn('Studio not initialized yet');
+                return;
+            }
+            
+            console.log(`📦 Loading studio scene: ${sceneName}`);
+            studioManager.loadScene(sceneName);
+        };
+
+        window.birthAvatar = () => {
+            if (useSpatialSpace && spatialEngine) {
+                // Use SpatialSpace avatar
+                window.createAvatar();
+                return;
+            }
+            
+            if (!modularityOS || !modularityOS.avatarFactory) return;
+            
+            if (localAvatar) {
+                localAvatar.dispose();
+                updateStatus('Avatar returned to glory');
+                localAvatar = null;
+            } else {
+                localAvatar = modularityOS.avatarFactory.birthLocalAvatar();
+                updateStatus('👤 Avatar birthed in the Spirit! Use WASD to move');
+            }
+        };
+
+        window.toggleFirstPerson = () => {
+            if (useSpatialSpace && spatialEngine && spatialEngine.camera) {
+                firstPersonMode = !firstPersonMode;
+                
+                if (spatialEngine.camera.radius !== undefined) {
+                    // Babylon.js ArcRotateCamera
+                    spatialEngine.camera.radius = firstPersonMode ? 0 : 10;
+                } else if (spatialEngine.camera.position) {
+                    // Three.js camera - adjust position
+                    const z = firstPersonMode ? 0 : 5;
+                    spatialEngine.camera.position.z = z;
+                }
+                
+                updateStatus(firstPersonMode ? '📷 First Person View' : '📷 Third Person View');
+                return;
+            }
+            
+            if (!modularityOS || !modularityOS.camera) return;
+            
+            firstPersonMode = !firstPersonMode;
+            
+            if (firstPersonMode) {
+                modularityOS.camera.radius = 0;
+                updateStatus('📷 First Person View');
+            } else {
+                modularityOS.camera.radius = 10;
+                updateStatus('📷 Third Person View');
+            }
+        };
+
+        // Start initialization
+        init();
+        setupMobileControls();
+        setupAdvancedGestures();
+        displayNetworkInfo();
+
+        // Handle page unload
+        window.addEventListener('beforeunload', () => {
+            if (modularityOS) {
+                modularityOS.dispose();
+            }
+        });
+    </script>
+</body>
+</html>

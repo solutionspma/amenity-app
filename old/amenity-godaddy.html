@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amenity Platform - Faith-Based Social Network</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .navbar {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            padding: 16px 24px;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .navbar-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .navbar h1 {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .navbar nav {
+            display: flex;
+            gap: 24px;
+        }
+        
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            transition: opacity 0.3s;
+        }
+        
+        .navbar a:hover {
+            opacity: 0.7;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 32px;
+        }
+        
+        .main-column {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+        
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+        
+        .card {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+        
+        .card h2, .card h3 {
+            color: white;
+            margin-bottom: 16px;
+        }
+        
+        .stories {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+        }
+        
+        .story {
+            min-width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.875rem;
+            text-align: center;
+            cursor: pointer;
+            border: 3px solid white;
+            transition: transform 0.3s;
+        }
+        
+        .story:hover {
+            transform: scale(1.05);
+        }
+        
+        .create-post textarea {
+            width: 100%;
+            min-height: 80px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 8px;
+            padding: 12px;
+            color: white;
+            resize: vertical;
+            font-family: inherit;
+        }
+        
+        .create-post textarea::placeholder {
+            color: rgba(255,255,255,0.7);
+        }
+        
+        .post-actions {
+            margin-top: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .post-buttons {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .icon-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        
+        .icon-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .post-btn {
+            background: white;
+            color: #667eea;
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .post-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        
+        .streams {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+        }
+        
+        .stream {
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        
+        .stream:hover {
+            transform: scale(1.02);
+        }
+        
+        .stream-title {
+            color: white;
+            font-weight: 600;
+        }
+        
+        .stream-viewers {
+            color: #e9d5ff;
+            font-size: 0.875rem;
+        }
+        
+        .feed-post {
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+        
+        .feed-post-content {
+            color: white;
+            margin-bottom: 8px;
+        }
+        
+        .feed-post-actions {
+            display: flex;
+            gap: 16px;
+            font-size: 0.875rem;
+            color: #e9d5ff;
+        }
+        
+        .feed-post-actions span {
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+        
+        .feed-post-actions span:hover {
+            opacity: 0.7;
+        }
+        
+        .sidebar-text {
+            color: #e9d5ff;
+            font-size: 0.875rem;
+            margin-bottom: 12px;
+        }
+        
+        .btn {
+            background: white;
+            color: #667eea;
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s;
+        }
+        
+        .btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        
+        .connection {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            color: #e9d5ff;
+            font-size: 0.875rem;
+        }
+        
+        .follow-btn {
+            background: white;
+            color: #667eea;
+            padding: 4px 8px;
+            border-radius: 4px;
+            border: none;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .follow-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+                padding: 16px;
+            }
+            
+            .navbar-content {
+                flex-direction: column;
+                gap: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <div class="navbar">
+        <div class="navbar-content">
+            <h1>🙏 Amenity Platform</h1>
+            <nav>
+                <a href="#home">Home</a>
+                <a href="#dashboard">Dashboard</a>
+                <a href="#profile">Profile</a>
+            </nav>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Main Feed Column -->
+        <div class="main-column">
+            
+            <!-- Stories Section -->
+            <div class="card">
+                <h2>📖 Stories</h2>
+                <div class="stories">
+                    <div class="story">Your Story</div>
+                    <div class="story">Pastor John</div>
+                    <div class="story">Youth Group</div>
+                    <div class="story">Worship Team</div>
+                    <div class="story">Bible Study</div>
+                </div>
+            </div>
+
+            <!-- Create Post -->
+            <div class="card create-post">
+                <h2>✍️ Create Post</h2>
+                <textarea placeholder="Share your faith journey, prayer requests, or encouraging words..."></textarea>
+                <div class="post-actions">
+                    <div class="post-buttons">
+                        <button class="icon-btn">📷</button>
+                        <button class="icon-btn">🎥</button>
+                        <button class="icon-btn">🙏</button>
+                    </div>
+                    <button class="post-btn">Post</button>
+                </div>
+            </div>
+
+            <!-- Live Streams -->
+            <div class="card">
+                <h2>🔴 Live Now</h2>
+                <div class="streams">
+                    <div class="stream">
+                        <div class="stream-title">Sunday Service</div>
+                        <div class="stream-viewers">🔴 Live • 234 viewers</div>
+                    </div>
+                    <div class="stream">
+                        <div class="stream-title">Bible Study</div>
+                        <div class="stream-viewers">🔴 Live • 156 viewers</div>
+                    </div>
+                    <div class="stream">
+                        <div class="stream-title">Youth Prayer</div>
+                        <div class="stream-viewers">🔴 Live • 89 viewers</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feed Posts -->
+            <div class="card">
+                <h2>📱 Community Feed</h2>
+                <div class="feed-post">
+                    <div class="feed-post-content">Prayer Request: Please pray for my family during this difficult time. Your prayers mean everything to us! 🙏</div>
+                    <div class="feed-post-actions">
+                        <span>👍 Like (23)</span>
+                        <span>💬 Comment (8)</span>
+                        <span>🙏 Prayer (15)</span>
+                        <span>📤 Share</span>
+                    </div>
+                </div>
+                <div class="feed-post">
+                    <div class="feed-post-content">Blessed Sunday service today! Pastor John's message on faith was exactly what I needed to hear. God is good! 🙏✨</div>
+                    <div class="feed-post-actions">
+                        <span>👍 Like (45)</span>
+                        <span>💬 Comment (12)</span>
+                        <span>🙏 Prayer (32)</span>
+                        <span>📤 Share</span>
+                    </div>
+                </div>
+                <div class="feed-post">
+                    <div class="feed-post-content">Bible verse of the day: "For God so loved the world that he gave his one and only Son..." - John 3:16 ❤️</div>
+                    <div class="feed-post-actions">
+                        <span>👍 Like (67)</span>
+                        <span>💬 Comment (19)</span>
+                        <span>🙏 Prayer (41)</span>
+                        <span>📤 Share</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="sidebar">
+            
+            <!-- AI Assistant -->
+            <div class="card">
+                <h3>🤖 JAY-I Assistant</h3>
+                <div class="sidebar-text">Your AI spiritual guide and content creator</div>
+                <button class="btn">Ask JAY-I</button>
+            </div>
+
+            <!-- Monetization Hub -->
+            <div class="card">
+                <h3>💰 Creator Hub</h3>
+                <div class="sidebar-text">
+                    <div>Monthly earnings: $2,450</div>
+                    <div>Revenue share: 85%</div>
+                    <div>Subscribers: 1,247</div>
+                </div>
+                <button class="btn">View Analytics</button>
+            </div>
+
+            <!-- Suggested Connections -->
+            <div class="card">
+                <h3>👥 Connect</h3>
+                <div class="connection">
+                    <span>Grace Baptist Church</span>
+                    <button class="follow-btn">Follow</button>
+                </div>
+                <div class="connection">
+                    <span>Christian Creators Hub</span>
+                    <button class="follow-btn">Follow</button>
+                </div>
+                <div class="connection">
+                    <span>Youth Ministry Network</span>
+                    <button class="follow-btn">Follow</button>
+                </div>
+                <div class="connection">
+                    <span>Worship Leaders United</span>
+                    <button class="follow-btn">Follow</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add some interactivity
+        document.addEventListener('DOMContentLoaded', function() {
+            // Post button functionality
+            const postBtn = document.querySelector('.post-btn');
+            const textarea = document.querySelector('textarea');
+            
+            postBtn.addEventListener('click', function() {
+                if (textarea.value.trim()) {
+                    alert('Post shared! 🙏');
+                    textarea.value = '';
+                } else {
+                    alert('Please write something to share!');
+                }
+            });
+
+            // Follow button functionality
+            const followBtns = document.querySelectorAll('.follow-btn');
+            followBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (this.textContent === 'Follow') {
+                        this.textContent = 'Following';
+                        this.style.background = '#4ecdc4';
+                    } else {
+                        this.textContent = 'Follow';
+                        this.style.background = 'white';
+                    }
+                });
+            });
+
+            // Stream click functionality
+            const streams = document.querySelectorAll('.stream');
+            streams.forEach(stream => {
+                stream.addEventListener('click', function() {
+                    alert('Joining live stream... 🔴');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

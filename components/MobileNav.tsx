@@ -34,7 +34,7 @@ export default function MobileNav() {
           <span className="text-xs">Chat</span>
         </Link>
         
-        <Link href="/profile" className="flex flex-col items-center justify-center space-y-1 text-gray-600 hover:text-blue-600">
+        <Link href="/profiles/me" className="flex flex-col items-center justify-center space-y-1 text-gray-600 hover:text-blue-600">
           <UserIcon className="h-6 w-6" />
           <span className="text-xs">Profile</span>
         </Link>

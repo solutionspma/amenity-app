@@ -1,48 +1,52 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 
 type Theme = 'light' | 'dark' | 'system';
 
 interface ThemeContextType {
   theme: Theme;
   setTheme: (theme: Theme) => void;
-  resolvedTheme: 'light' | 'dark';
+  actualTheme: 'light' | 'dark'; // The actual resolved theme (for system)
+  toggleTheme: () => void; // Quick toggle between light/dark
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-export function ThemeProvider({ children }: { children: React.ReactNode }) {
+export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState<Theme>('system');
-  const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>('light');
+  const [actualTheme, setActualTheme] = useState<'light' | 'dark'>('dark');
 
   useEffect(() => {
-    // Load theme from localStorage
-    const savedTheme = localStorage.getItem('theme') as Theme;
-    if (savedTheme && ['light', 'dark', 'system'].includes(savedTheme)) {
+    // Load theme from localStorage on mount
+    const savedTheme = localStorage.getItem('amenity-theme') as Theme;
+    if (savedTheme) {
       setTheme(savedTheme);
+    } else {
+      // Default to system theme detection
+      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      setTheme('system');
+      setActualTheme(systemTheme);
     }
   }, []);
 
   useEffect(() => {
     // Save theme to localStorage
-    localStorage.setItem('theme', theme);
-
-    // Determine resolved theme
-    let resolved: 'light' | 'dark' = 'light';
-    
-    if (theme === 'system') {
-      resolved = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    } else {
-      resolved = theme;
-    }
-
-    setResolvedTheme(resolved);
+    localStorage.setItem('amenity-theme', theme);
 
     // Apply theme to document
-    document.documentElement.classList.remove('light', 'dark');
-    document.documentElement.classList.add(resolved);
-    document.documentElement.setAttribute('data-theme', resolved);
+    const root = document.documentElement;
+    
+    if (theme === 'system') {
+      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      root.classList.toggle('dark', systemTheme === 'dark');
+      root.classList.toggle('light', systemTheme === 'light');
+      setActualTheme(systemTheme);
+    } else {
+      root.classList.toggle('dark', theme === 'dark');
+      root.classList.toggle('light', theme === 'light');
+      setActualTheme(theme as 'light' | 'dark');
+    }
   }, [theme]);
 
   useEffect(() => {
@@ -50,20 +54,30 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     const handleChange = () => {
       if (theme === 'system') {
-        const resolved = mediaQuery.matches ? 'dark' : 'light';
-        setResolvedTheme(resolved);
-        document.documentElement.classList.remove('light', 'dark');
-        document.documentElement.classList.add(resolved);
-        document.documentElement.setAttribute('data-theme', resolved);
+        const systemTheme = mediaQuery.matches ? 'dark' : 'light';
+        document.documentElement.classList.toggle('dark', systemTheme === 'dark');
+        document.documentElement.classList.toggle('light', systemTheme === 'light');
+        setActualTheme(systemTheme);
       }
     };
 
-    mediaQuery.addListener(handleChange);
-    return () => mediaQuery.removeListener(handleChange);
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
   }, [theme]);
 
+  const toggleTheme = () => {
+    if (theme === 'light') {
+      setTheme('dark');
+    } else if (theme === 'dark') {
+      setTheme('light');
+    } else {
+      // If system, toggle to opposite of current actual theme
+      setTheme(actualTheme === 'dark' ? 'light' : 'dark');
+    }
+  };
+
   return (
-    <ThemeContext.Provider value={{ theme, setTheme, resolvedTheme }}>
+    <ThemeContext.Provider value={{ theme, setTheme, actualTheme, toggleTheme }}>
       {children}
     </ThemeContext.Provider>
   );

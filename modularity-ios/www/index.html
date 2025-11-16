@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Modularity Spatial OS - Native iOS Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 500px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-bottom: 40px;
+        }
+
+        .status {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+        }
+
+        .badge {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .badge.available {
+            background: #10b981;
+        }
+
+        .badge.unavailable {
+            background: #ef4444;
+        }
+
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        button {
+            padding: 18px 30px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 15px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .ar-btn {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-color: #f093fb;
+        }
+
+        .vr-btn {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            border-color: #4facfe;
+        }
+
+        .model-btn {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            border-color: #43e97b;
+            font-size: 0.95rem;
+            padding: 15px 25px;
+        }
+
+        .footer {
+            margin-top: 40px;
+            opacity: 0.7;
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔮 Modularity OS</h1>
+        <p class="subtitle">Native iOS AR/VR Demo</p>
+
+        <div class="status">
+            <div class="status-item">
+                <span>AR Support:</span>
+                <span class="badge" id="ar-status">Checking...</span>
+            </div>
+            <div class="status-item">
+                <span>VR Support:</span>
+                <span class="badge" id="vr-status">Checking...</span>
+            </div>
+        </div>
+
+        <div class="button-group">
+            <button class="ar-btn" onclick="enterAR()" id="ar-enter-btn">
+                📱 Enter AR Mode
+            </button>
+
+            <button class="vr-btn" onclick="enterVR()" id="vr-enter-btn">
+                🥽 Enter VR Mode
+            </button>
+
+            <button class="model-btn" onclick="placeSanctuary()" id="sanctuary-btn" disabled>
+                ⛪ Place Sanctuary in AR
+            </button>
+
+            <button class="model-btn" onclick="placeStudio()" id="studio-btn" disabled>
+                🎬 Place Studio in AR
+            </button>
+        </div>
+
+        <p class="footer">
+            Built with ❤️ by Pitch Marketing Agency<br>
+            Faith-based AR/VR for the next generation 🙏
+        </p>
+    </div>
+
+    <!-- AR/VR JavaScript APIs (injected by build script) -->
+    <script src="src/ar.js"></script>
+    <script src="src/vr.js"></script>
+
+    <script>
+        // Check AR/VR availability on load
+        window.addEventListener('load', () => {
+            const arStatus = document.getElementById('ar-status');
+            const vrStatus = document.getElementById('vr-status');
+            const arBtn = document.getElementById('ar-enter-btn');
+            const vrBtn = document.getElementById('vr-enter-btn');
+            const sanctuaryBtn = document.getElementById('sanctuary-btn');
+            const studioBtn = document.getElementById('studio-btn');
+
+            // Check AR
+            if (window.AR && AR.isAvailable()) {
+                arStatus.textContent = 'Available ✓';
+                arStatus.classList.add('available');
+                arBtn.disabled = false;
+                sanctuaryBtn.disabled = false;
+                studioBtn.disabled = false;
+            } else {
+                arStatus.textContent = 'Unavailable';
+                arStatus.classList.add('unavailable');
+                arBtn.disabled = true;
+            }
+
+            // Check VR
+            if (window.VR && VR.isAvailable()) {
+                vrStatus.textContent = 'Available ✓';
+                vrStatus.classList.add('available');
+                vrBtn.disabled = false;
+            } else {
+                vrStatus.textContent = 'Unavailable';
+                vrStatus.classList.add('unavailable');
+                vrBtn.disabled = true;
+            }
+        });
+
+        // AR Functions
+        async function enterAR() {
+            try {
+                console.log('Entering AR mode...');
+                await AR.enter();
+            } catch (error) {
+                console.error('Failed to enter AR:', error);
+                alert('Failed to enter AR mode');
+            }
+        }
+
+        async function placeSanctuary() {
+            try {
+                console.log('Placing Sanctuary...');
+                await AR.enter();
+                await new Promise(resolve => setTimeout(resolve, 500));
+                await AR.placeModel('sanctuary.glb');
+            } catch (error) {
+                console.error('Failed to place Sanctuary:', error);
+                alert('Failed to place Sanctuary');
+            }
+        }
+
+        async function placeStudio() {
+            try {
+                console.log('Placing Studio...');
+                await AR.enter();
+                await new Promise(resolve => setTimeout(resolve, 500));
+                await AR.placeModel('studio-complex.glb');
+            } catch (error) {
+                console.error('Failed to place Studio:', error);
+                alert('Failed to place Studio');
+            }
+        }
+
+        // VR Functions
+        async function enterVR() {
+            try {
+                console.log('Entering VR mode...');
+                await VR.enter();
+            } catch (error) {
+                console.error('Failed to enter VR:', error);
+                alert('Failed to enter VR mode');
+            }
+        }
+
+        // Log environment info
+        console.log('🔮 Modularity Spatial OS - Native iOS');
+        console.log('AR Available:', window.AR?.isAvailable());
+        console.log('VR Available:', window.VR?.isAvailable());
+        console.log('Capacitor:', !!window.Capacitor);
+    </script>
+</body>
+</html>

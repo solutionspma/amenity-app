@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Monetization - Amenity Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            min-height: 100vh;
+            color: #212529;
+        }
+        
+        .navbar {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            padding: 16px 24px;
+            border-bottom: 1px solid #d4af37;
+            box-shadow: 0 2px 20px rgba(212,175,55,0.1);
+        }
+        
+        .navbar-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .navbar h1 {
+            color: #212529;
+            font-size: 1.8rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #d4af37, #b8860b);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .navbar nav {
+            display: flex;
+            gap: 24px;
+        }
+        
+        .navbar a {
+            color: #495057;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        
+        .navbar a:hover, .navbar a.active {
+            background: linear-gradient(135deg, #d4af37, #b8860b);
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid #e9ecef;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+            margin-bottom: 24px;
+        }
+        
+        .card h2 {
+            color: #212529;
+            margin-bottom: 16px;
+            font-size: 1.5rem;
+            border-bottom: 2px solid #d4af37;
+            padding-bottom: 8px;
+        }
+        
+        .revenue-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+        
+        .revenue-card {
+            background: linear-gradient(135deg, #d4af37 0%, #b8860b 100%);
+            border-radius: 12px;
+            padding: 24px;
+            color: white;
+            text-align: center;
+        }
+        
+        .revenue-amount {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        
+        .revenue-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-bottom: 8px;
+        }
+        
+        .revenue-change {
+            font-size: 0.8rem;
+            font-weight: bold;
+            background: rgba(255,255,255,0.2);
+            padding: 4px 8px;
+            border-radius: 12px;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #d4af37, #b8860b);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 4px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(212,175,55,0.3);
+        }
+        
+        .btn.secondary {
+            background: linear-gradient(135deg, #6c757d, #495057);
+        }
+        
+        .monetization-option {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 16px 0;
+            transition: all 0.3s;
+        }
+        
+        .monetization-option:hover {
+            border-color: #d4af37;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(212,175,55,0.1);
+        }
+        
+        .option-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .option-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #212529;
+        }
+        
+        .option-status {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-inactive {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .payout-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin: 8px 0;
+        }
+        
+        .payout-date {
+            font-weight: bold;
+            color: #495057;
+        }
+        
+        .payout-amount {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #d4af37;
+        }
+        
+        .payout-status {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            background: #d4edda;
+            color: #155724;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <div class="navbar">
+        <div class="navbar-content">
+            <h1>✨ Amenity Platform</h1>
+            <nav>
+                <a href="index.html">Home</a>
+                <a href="dashboard.html">Dashboard</a>
+                <a href="profile.html">Profile</a>
+                <a href="livestream.html">Go Live</a>
+                <a href="ad-manager.html">Ads</a>
+                <a href="analytics.html">Analytics</a>
+                <a href="monetization.html" class="active">Revenue</a>
+            </nav>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Revenue Overview -->
+        <div class="revenue-grid">
+            <div class="revenue-card">
+                <div class="revenue-amount">$4,847</div>
+                <div class="revenue-label">Total Earnings This Month</div>
+                <div class="revenue-change">↗ +28% from last month</div>
+            </div>
+            <div class="revenue-card">
+                <div class="revenue-amount">$2,245</div>
+                <div class="revenue-label">Tips & Donations</div>
+                <div class="revenue-change">↗ +35% from last month</div>
+            </div>
+            <div class="revenue-card">
+                <div class="revenue-amount">$1,890</div>
+                <div class="revenue-label">Subscription Revenue</div>
+                <div class="revenue-change">↗ +22% from last month</div>
+            </div>
+            <div class="revenue-card">
+                <div class="revenue-amount">$712</div>
+                <div class="revenue-label">Event Ticket Sales</div>
+                <div class="revenue-change">↗ +45% from last month</div>
+            </div>
+            <div class="revenue-card">
+                <div class="revenue-amount">85%</div>
+                <div class="revenue-label">Revenue Share Rate</div>
+                <div class="revenue-change">Industry Leading</div>
+            </div>
+        </div>
+
+        <!-- Monetization Options -->
+        <div class="card">
+            <h2>💰 Monetization Methods</h2>
+            
+            <div class="monetization-option">
+                <div class="option-header">
+                    <div class="option-title">🙏 Tips & Donations</div>
+                    <div class="option-status status-active">Active</div>
+                </div>
+                <p style="color: #6c757d; margin-bottom: 12px;">Accept one-time tips and donations from your community during live streams and posts.</p>
+                <div style="display: flex; gap: 12px;">
+                    <button class="btn" onclick="configureTips()">Configure Settings</button>
+                    <button class="btn secondary" onclick="viewTipHistory()">View History</button>
+                </div>
+            </div>
+
+            <div class="monetization-option">
+                <div class="option-header">
+                    <div class="option-title">📅 Subscription Plans</div>
+                    <div class="option-status status-active">Active</div>
+                </div>
+                <p style="color: #6c757d; margin-bottom: 12px;">Offer monthly subscriptions for exclusive content, early access, and premium features.</p>
+                <div style="display: flex; gap: 12px;">
+                    <button class="btn" onclick="manageSubscriptions()">Manage Plans</button>
+                    <button class="btn secondary" onclick="viewSubscribers()">View Subscribers (247)</button>
+                </div>
+            </div>
+
+            <div class="monetization-option">
+                <div class="option-header">
+                    <div class="option-title">🎫 Event Tickets</div>
+                    <div class="option-status status-active">Active</div>
+                </div>
+                <p style="color: #6c757d; margin-bottom: 12px;">Sell tickets for special events, conferences, retreats, and exclusive gatherings.</p>
+                <div style="display: flex; gap: 12px;">
+                    <button class="btn" onclick="createEvent()">Create Event</button>
+                    <button class="btn secondary" onclick="manageEvents()">Manage Events</button>
+                </div>
+            </div>
+
+            <div class="monetization-option">
+                <div class="option-header">
+                    <div class="option-title">💒 Tithe & Offerings</div>
+                    <div class="option-status status-active">Active</div>
+                </div>
+                <p style="color: #6c757d; margin-bottom: 12px;">Provide a secure platform for church tithes and special offering collections.</p>
+                <div style="display: flex; gap: 12px;">
+                    <button class="btn" onclick="configureTithe()">Configure Tithe</button>
+                    <button class="btn secondary" onclick="viewOfferings()">View Offerings</button>
+                </div>
+            </div>
+
+            <div class="monetization-option">
+                <div class="option-header">
+                    <div class="option-title">🛍️ Merchandise Store</div>
+                    <div class="option-status status-inactive">Setup Required</div>
+                </div>
+                <p style="color: #6c757d; margin-bottom: 12px;">Sell branded merchandise, books, music, and other products to your community.</p>
+                <div style="display: flex; gap: 12px;">
+                    <button class="btn" onclick="setupStore()">Setup Store</button>
+                    <button class="btn secondary" onclick="learnMore('store')">Learn More</button>
+                </div>
+            </div>
+
+            <div class="monetization-option">
+                <div class="option-header">
+                    <div class="option-title">📚 Course Sales</div>
+                    <div class="option-status status-inactive">Coming Soon</div>
+                </div>
+                <p style="color: #6c757d; margin-bottom: 12px;">Create and sell online courses, Bible studies, and educational content.</p>
+                <div style="display: flex; gap: 12px;">
+                    <button class="btn secondary" onclick="joinWaitlist('courses')">Join Waitlist</button>
+                    <button class="btn secondary" onclick="learnMore('courses')">Learn More</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Payouts -->
+        <div class="card">
+            <h2>💳 Recent Payouts</h2>
+            
+            <div class="payout-item">
+                <div>
+                    <div class="payout-date">November 1, 2025</div>
+                    <div style="color: #6c757d; font-size: 0.9rem;">Monthly Payout</div>
+                </div>
+                <div class="payout-amount">$4,247.83</div>
+                <div class="payout-status">Completed</div>
+            </div>
+            
+            <div class="payout-item">
+                <div>
+                    <div class="payout-date">October 1, 2025</div>
+                    <div style="color: #6c757d; font-size: 0.9rem;">Monthly Payout</div>
+                </div>
+                <div class="payout-amount">$3,891.45</div>
+                <div class="payout-status">Completed</div>
+            </div>
+            
+            <div class="payout-item">
+                <div>
+                    <div class="payout-date">September 1, 2025</div>
+                    <div style="color: #6c757d; font-size: 0.9rem;">Monthly Payout</div>
+                </div>
+                <div class="payout-amount">$3,456.78</div>
+                <div class="payout-status">Completed</div>
+            </div>
+            
+            <button class="btn" onclick="requestPayout()" style="margin-top: 16px;">💰 Request Early Payout</button>
+            <button class="btn secondary" onclick="viewAllPayouts()">View All Payouts</button>
+        </div>
+
+        <!-- Payment Settings -->
+        <div class="card">
+            <h2>⚙️ Payment Settings</h2>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                <div>
+                    <h4>💳 Payout Method</h4>
+                    <p style="color: #6c757d; margin: 8px 0;">Bank Account: **** **** **** 4567</p>
+                    <button class="btn" onclick="updatePayment()">Update Payment Method</button>
+                </div>
+                
+                <div>
+                    <h4>📊 Tax Information</h4>
+                    <p style="color: #6c757d; margin: 8px 0;">W-9 Form: ✅ Submitted</p>
+                    <button class="btn secondary" onclick="updateTax()">Update Tax Info</button>
+                </div>
+            </div>
+            
+            <div style="margin-top: 24px;">
+                <h4>📈 Revenue Share Breakdown</h4>
+                <div style="background: #f8f9fa; padding: 16px; border-radius: 8px; margin: 12px 0;">
+                    <div style="display: flex; justify-content: space-between; margin: 8px 0;">
+                        <span>Platform Fee</span>
+                        <span style="color: #d4af37; font-weight: bold;">15%</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin: 8px 0;">
+                        <span>Your Share</span>
+                        <span style="color: #d4af37; font-weight: bold;">85%</span>
+                    </div>
+                    <hr style="margin: 12px 0; border-color: #e9ecef;">
+                    <div style="display: flex; justify-content: space-between; margin: 8px 0; font-weight: bold;">
+                        <span>Industry Average</span>
+                        <span style="color: #6c757d;">50-70%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function configureTips() {
+            alert('💰 Tip Configuration: Set minimum amounts, suggested tip levels, and custom messages for donors. Enable tip goals and thank-you automation!');
+        }
+        
+        function viewTipHistory() {
+            alert('📊 Tip History: Last 30 days - $2,245 from 156 supporters. Top supporter: $250. Average tip: $14.39');
+        }
+        
+        function manageSubscriptions() {
+            alert('📅 Subscription Management: Current plans - Basic ($9.99), Premium ($19.99), VIP ($39.99). 247 active subscribers generating $1,890/month');
+        }
+        
+        function createEvent() {
+            alert('🎫 Event Creation: Create ticketed events for conferences, retreats, special services, and workshops. Set pricing, capacity, and early bird discounts!');
+        }
+        
+        function configureTithe() {
+            alert('💒 Tithe Setup: Configure secure tithe collection with automatic receipts, fund allocation, and donor management for your church.');
+        }
+        
+        function setupStore() {
+            alert('🛍️ Merchandise Store Setup: Create your online store to sell books, music, apparel, and ministry resources. Integration with print-on-demand services available!');
+        }
+        
+        function requestPayout() {
+            if (confirm('Request early payout of $847.23 current balance? (3% processing fee applies)')) {
+                alert('💳 Payout requested! Funds will be transferred to your account within 1-2 business days. Confirmation email sent.');
+            }
+        }
+        
+        function updatePayment() {
+            alert('💳 Payment Method Update: Add bank account, PayPal, or Stripe account for faster payouts. Update routing/account numbers securely.');
+        }
+        
+        function learnMore(feature) {
+            if (feature === 'store') {
+                alert('🛍️ Merchandise Store: Sell physical and digital products. Automated order fulfillment, inventory tracking, and customer support included!');
+            } else if (feature === 'courses') {
+                alert('📚 Course Platform: Create comprehensive Bible studies, leadership training, and educational content. Interactive lessons, quizzes, and certificates available!');
+            }
+        }
+        
+        function joinWaitlist(feature) {
+            alert(`📋 Added to ${feature} waitlist! You'll be notified when this feature launches. Early access available for top creators!`);
+        }
+    </script>
+</body>
+</html>

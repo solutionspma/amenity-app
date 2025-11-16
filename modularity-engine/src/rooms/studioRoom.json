@@ -1,0 +1,37 @@
+{
+  "name": "Recording Studio",
+  "type": "studio",
+  "description": "Professional recording space for worship music and podcasts",
+  "modelPath": "/models/rooms/studio.glb",
+  "capacity": 8,
+  "spawnPoint": {
+    "position": [0, 1.6, -4],
+    "rotation": [0, 0, 0]
+  },
+  "lighting": {
+    "ambient": [0.3, 0.25, 0.4],
+    "spotlights": [
+      {
+        "position": [0, 3, 0],
+        "direction": [0, -1, 0],
+        "intensity": 0.6,
+        "color": [0.8, 0.7, 1.0]
+      }
+    ]
+  },
+  "acoustics": {
+    "reverb": 0.05,
+    "absorption": 0.9,
+    "description": "Soundproof, dry acoustics for recording"
+  },
+  "atmosphere": {
+    "fogMode": false,
+    "skyColor": [0.2, 0.2, 0.25]
+  },
+  "interactables": [
+    "microphone",
+    "mixing_desk",
+    "monitors",
+    "instruments"
+  ]
+}

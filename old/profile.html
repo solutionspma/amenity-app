@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Profile - Amenity Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .navbar {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            padding: 16px 24px;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .navbar-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .navbar h1 {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .navbar nav {
+            display: flex;
+            gap: 24px;
+        }
+        
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: background 0.3s;
+        }
+        
+        .navbar a:hover, .navbar a.active {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+        
+        .profile-header {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 32px;
+            border: 1px solid rgba(255,255,255,0.2);
+            margin-bottom: 24px;
+            text-align: center;
+        }
+        
+        .profile-pic {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 3rem;
+            border: 4px solid white;
+        }
+        
+        .profile-name {
+            color: white;
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        
+        .profile-bio {
+            color: #e9d5ff;
+            font-size: 1.125rem;
+            margin-bottom: 16px;
+        }
+        
+        .profile-stats {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            margin: 24px 0;
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-number {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .stat-label {
+            color: #e9d5ff;
+            font-size: 0.875rem;
+        }
+        
+        .btn {
+            background: white;
+            color: #667eea;
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 0 8px;
+            transition: all 0.3s;
+        }
+        
+        .btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 24px;
+        }
+        
+        .card {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid rgba(255,255,255,0.2);
+            margin-bottom: 16px;
+        }
+        
+        .card h3 {
+            color: white;
+            margin-bottom: 12px;
+        }
+        
+        .post {
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+        
+        .post-content {
+            color: white;
+            margin-bottom: 8px;
+        }
+        
+        .post-meta {
+            color: #e9d5ff;
+            font-size: 0.875rem;
+            display: flex;
+            gap: 16px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <div class="navbar">
+        <div class="navbar-content">
+            <h1>🙏 Amenity Platform</h1>
+            <nav>
+                <a href="index.html">Home</a>
+                <a href="dashboard.html">Dashboard</a>
+                <a href="profile.html" class="active">Profile</a>
+                <a href="livestream.html">Go Live</a>
+            </nav>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Profile Header -->
+        <div class="profile-header">
+            <div class="profile-pic">👨‍💼</div>
+            <div class="profile-name">Pastor John Smith</div>
+            <div class="profile-bio">Spreading faith, hope, and love through digital ministry • Senior Pastor at Grace Fellowship</div>
+            
+            <div class="profile-stats">
+                <div class="stat">
+                    <div class="stat-number">1,247</div>
+                    <div class="stat-label">Followers</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">589</div>
+                    <div class="stat-label">Following</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">342</div>
+                    <div class="stat-label">Posts</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">89</div>
+                    <div class="stat-label">Live Streams</div>
+                </div>
+            </div>
+            
+            <button class="btn" onclick="editProfile()">Edit Profile</button>
+            <button class="btn" onclick="alert('Settings opening...')">Settings</button>
+        </div>
+
+        <div class="content-grid">
+            <!-- Main Content -->
+            <div>
+                <!-- Recent Posts -->
+                <div class="card">
+                    <h3>📱 Recent Posts</h3>
+                    
+                    <div class="post">
+                        <div class="post-content">
+                            🙏 "Be strong and courageous. Do not be afraid; do not be discouraged, for the Lord your God will be with you wherever you go." - Joshua 1:9
+                            
+                            Starting this beautiful Monday with faith and determination! What verse is encouraging you today?
+                        </div>
+                        <div class="post-meta">
+                            <span>👍 156 likes</span>
+                            <span>💬 23 comments</span>
+                            <span>🙏 89 prayers</span>
+                            <span>2 hours ago</span>
+                        </div>
+                    </div>
+                    
+                    <div class="post">
+                        <div class="post-content">
+                            Amazing Sunday service yesterday! 🎉 Thank you to everyone who joined us in worship. The message on "Faith in Action" really resonated with our community.
+                            
+                            For those who missed it, the full service is available on our channel. Blessings! ✨
+                        </div>
+                        <div class="post-meta">
+                            <span>👍 234 likes</span>
+                            <span>💬 45 comments</span>
+                            <span>🙏 127 prayers</span>
+                            <span>1 day ago</span>
+                        </div>
+                    </div>
+                    
+                    <div class="post">
+                        <div class="post-content">
+                            🔴 LIVE: Bible Study tonight at 7 PM! We'll be diving deep into the Book of Proverbs, Chapter 3. 
+                            
+                            Bring your questions and an open heart. See you there! 📖
+                        </div>
+                        <div class="post-meta">
+                            <span>👍 89 likes</span>
+                            <span>💬 12 comments</span>
+                            <span>🙏 45 prayers</span>
+                            <span>2 days ago</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Streams -->
+                <div class="card">
+                    <h3>🎥 Recent Live Streams</h3>
+                    
+                    <div class="post">
+                        <div class="post-content">
+                            <strong>Sunday Service - "Faith in Action"</strong><br>
+                            Full worship service with sermon on living out our faith daily
+                        </div>
+                        <div class="post-meta">
+                            <span>👁️ 456 views</span>
+                            <span>⏱️ 1h 23m</span>
+                            <span>3 days ago</span>
+                        </div>
+                    </div>
+                    
+                    <div class="post">
+                        <div class="post-content">
+                            <strong>Wednesday Bible Study</strong><br>
+                            Interactive study of Proverbs with Q&A session
+                        </div>
+                        <div class="post-meta">
+                            <span>👁️ 234 views</span>
+                            <span>⏱️ 45m</span>
+                            <span>1 week ago</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div>
+                <!-- Ministry Info -->
+                <div class="card">
+                    <h3>⛪ Ministry Info</h3>
+                    <div style="color: #e9d5ff; line-height: 1.5;">
+                        <p><strong style="color: white;">Church:</strong> Grace Fellowship</p>
+                        <p><strong style="color: white;">Role:</strong> Senior Pastor</p>
+                        <p><strong style="color: white;">Years in Ministry:</strong> 15</p>
+                        <p><strong style="color: white;">Location:</strong> Austin, TX</p>
+                        <p><strong style="color: white;">Denomination:</strong> Non-denominational</p>
+                    </div>
+                </div>
+
+                <!-- Achievements -->
+                <div class="card">
+                    <h3>🏆 Achievements</h3>
+                    <div style="color: #e9d5ff; line-height: 1.8;">
+                        <p>🎖️ Faith Leader Badge</p>
+                        <p>📺 100+ Live Streams</p>
+                        <p>👥 1K+ Followers</p>
+                        <p>🙏 10K+ Prayers Received</p>
+                        <p>💰 Top Creator (85% share)</p>
+                        <p>⭐ Community Champion</p>
+                    </div>
+                </div>
+
+                <!-- Contact -->
+                <div class="card">
+                    <h3>📞 Contact</h3>
+                    <div style="color: #e9d5ff; line-height: 1.8;">
+                        <p>📧 pastor.john@gracefellowship.org</p>
+                        <p>📱 Prayer Line: (555) 123-PRAY</p>
+                        <p>🌐 gracefellowship.org</p>
+                        <p>📍 Austin, TX</p>
+                    </div>
+                    <button class="btn" style="width: 100%; margin-top: 12px;" onclick="alert('Message sent!')">Send Message</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function editProfile() {
+            alert("Profile editing feature coming soon! You'll be able to update your bio, photo, ministry information, and more.");
+        }
+    </script>
+</body>
+</html>

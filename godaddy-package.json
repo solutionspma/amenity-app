@@ -1,0 +1,16 @@
+{
+  "name": "amenity-platform-godaddy",
+  "version": "3.0.0",
+  "description": "Amenity Platform - Complete faith ecosystem deployment for GoDaddy",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "next": "14.2.33",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
