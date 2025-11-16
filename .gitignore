@@ -64,3 +64,4 @@ node_modules
 *.zip
 **/logos/pitch-ball-logo.png
 **/logos/pmslogo.png
+.vercel
