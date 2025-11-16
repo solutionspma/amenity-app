@@ -41,68 +41,84 @@ export default function ProfileClient({ id }: { id: string }) {
     setMounted(true);
   }, []);
 
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        // API call would go here
-        // const response = await fetch(`/api/profiles/${id}`);
-        // const data = await response.json();
-        
-        // Load uploaded images
-        const userId = id === 'me' ? 'demo-user-id' : id;
-        const uploadedProfileImage = ImageUploadService.getProfileImage(userId);
-        const uploadedCoverImage = ImageUploadService.getCoverImage(userId);
+  const fetchProfile = async () => {
+    try {
+      // Load uploaded images
+      const userId = id === 'me' ? 'demo-user-id' : id;
+      const uploadedProfileImage = ImageUploadService.getProfileImage(userId);
+      const uploadedCoverImage = ImageUploadService.getCoverImage(userId);
 
-        // Load saved profile data from localStorage
-        let savedProfileData: any = null;
-        if (typeof window !== 'undefined') {
-          const savedProfile = localStorage.getItem('amenity_profile_backup');
-          if (savedProfile) {
-            try {
-              savedProfileData = JSON.parse(savedProfile);
-            } catch (e) {
-              console.error('Error parsing saved profile:', e);
-            }
+      // Load saved profile data from localStorage
+      let savedProfileData: any = null;
+      if (typeof window !== 'undefined') {
+        const savedProfile = localStorage.getItem('amenity_profile_backup');
+        if (savedProfile) {
+          try {
+            savedProfileData = JSON.parse(savedProfile);
+          } catch (e) {
+            console.error('Error parsing saved profile:', e);
           }
         }
+      }
 
-        // Mock data for now - use saved data if available
-        const mockProfile: UserProfile = {
-          id: id,
-          name: savedProfileData?.name || (id === 'me' ? 'Your Profile' : `User ${id}`),
-          username: savedProfileData?.username || (id === 'me' ? '@yourhandle' : `@user${id}`),
-          bio: savedProfileData?.bio || (id === 'me' 
-            ? 'Welcome to your Amenity profile! Connect, create, and grow your community. ✨ Living my best life on the platform!' 
-            : 'Sharing life moments and connecting with amazing people on Amenity. 🌟 Content creator | Lifestyle | Faith'),
-          avatar: uploadedProfileImage || '/logos/altar-life-logo.png',
-          coverImage: uploadedCoverImage || '/images/default-cover.jpg',
-          followers: Math.floor(Math.random() * 10000) + 1000,
-          following: Math.floor(Math.random() * 1000) + 100,
-          posts: Math.floor(Math.random() * 500) + 50,
-          verified: Math.random() > 0.3,
-          joinDate: 'January 2024',
-          location: savedProfileData?.location || 'New York, NY',
-          website: savedProfileData?.website || 'amenityapp.com',
-          isFollowing: Math.random() > 0.5
-        };
+      // Mock data for now - use saved data if available
+      const mockProfile: UserProfile = {
+        id: id,
+        name: savedProfileData?.name || (id === 'me' ? 'Your Profile' : `User ${id}`),
+        username: savedProfileData?.username || (id === 'me' ? '@yourhandle' : `@user${id}`),
+        bio: savedProfileData?.bio || (id === 'me' 
+          ? 'Welcome to your Amenity profile! Connect, create, and grow your community. ✨ Living my best life on the platform!' 
+          : 'Sharing life moments and connecting with amazing people on Amenity. 🌟 Content creator | Lifestyle | Faith'),
+        avatar: uploadedProfileImage || '/logos/altar-life-logo.png',
+        coverImage: uploadedCoverImage || '/images/default-cover.jpg',
+        followers: savedProfileData?.stats?.followers || 0,
+        following: savedProfileData?.stats?.following || 1,
+        posts: savedProfileData?.stats?.posts || 0,
+        verified: Math.random() > 0.3,
+        joinDate: 'January 2024',
+        location: savedProfileData?.location || 'New York, NY',
+        website: savedProfileData?.website || 'amenityapp.com',
+        isFollowing: Math.random() > 0.5
+      };
 
-        // Load real posts from PostService
-        const userPosts = PostService.getUserPosts(userId);
-        
-        // If no posts exist, user can create them
-        // No more mock posts - keep it real!
-        setPosts(userPosts);
+      // Load real posts from PostService
+      const userPosts = PostService.getUserPosts(userId);
+      
+      setPosts(userPosts);
+      setProfile(mockProfile);
+      setIsFollowing(mockProfile.isFollowing || false);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching profile:', error);
+      setLoading(false);
+    }
+  };
 
-        setProfile(mockProfile);
-        setIsFollowing(mockProfile.isFollowing || false);
-      } catch (error) {
-        console.error('Error fetching profile:', error);
-      } finally {
-        setLoading(false);
+  useEffect(() => {
+    fetchProfile();
+
+    // Listen for storage changes
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'amenity_profile_backup' || e.key?.includes('amenity_')) {
+        fetchProfile();
       }
     };
 
-    fetchProfile();
+    const handleProfileUpdate = () => {
+      fetchProfile();
+    };
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('storage', handleStorageChange);
+      window.addEventListener('profileUpdated', handleProfileUpdate);
+    }
+
+    return () => {
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('storage', handleStorageChange);
+        window.removeEventListener('profileUpdated', handleProfileUpdate);
+      }
+    };
   }, [id]);
 
   const handleFollow = async () => {

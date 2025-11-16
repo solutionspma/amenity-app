@@ -27,7 +27,7 @@ export default function FeedPage() {
   const [profileImage, setProfileImage] = useState<string>('');
   const { getBackdropStyle } = useBackdrop();
 
-  useEffect(() => {
+  const loadProfileData = () => {
     if (typeof window === 'undefined') return;
 
     // Load user profile
@@ -45,6 +45,30 @@ export default function FeedPage() {
     // Load posts
     const feedPosts = PostService.getGlobalFeed();
     setPosts(feedPosts);
+  };
+
+  useEffect(() => {
+    loadProfileData();
+
+    // Listen for storage changes (when profile is updated in settings)
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'amenity_profile_backup' || e.key?.includes('amenity_')) {
+        loadProfileData();
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    
+    // Also listen for custom profile update event (same window)
+    const handleProfileUpdate = () => {
+      loadProfileData();
+    };
+    window.addEventListener('profileUpdated', handleProfileUpdate);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('profileUpdated', handleProfileUpdate);
+    };
   }, []);
 
   const handleLike = (postId: string) => {

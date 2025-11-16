@@ -120,7 +120,17 @@ export default function ProfileSettings() {
         console.log('✅ Profile saved successfully');
         setUploadSuccess('✅ Profile saved successfully!');
         setTimeout(() => setUploadSuccess(''), 3000);
-        // Don't auto-redirect, let user continue editing
+        
+        // Trigger event to notify other pages to refresh
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new Event('profileUpdated'));
+          // Also trigger storage event for cross-tab sync
+          window.dispatchEvent(new StorageEvent('storage', {
+            key: 'amenity_profile_backup',
+            newValue: JSON.stringify(profile),
+            url: window.location.href
+          }));
+        }
       } else {
         alert('❌ Error saving profile. Please try again.');
       }
