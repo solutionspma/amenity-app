@@ -52,7 +52,7 @@ export default function LoginPage() {
           ProfileInitService.initializeProfile('demo-user-id', email);
           
           // Auto-follow master user
-          PostService.autoFollowAdmin();
+          PostService.autoFollowAdmin('demo-user-id');
         }
         
         setTimeout(() => {

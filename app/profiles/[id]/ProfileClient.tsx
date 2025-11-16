@@ -32,8 +32,6 @@ export default function ProfileClient({ id }: { id: string }) {
   const [loading, setLoading] = useState(true);
   const [isFollowing, setIsFollowing] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const [showCreatePost, setShowCreatePost] = useState(false);
-  const [newPostContent, setNewPostContent] = useState('');
   const { getBackdropStyle } = useBackdrop();
   const router = useRouter();
 
@@ -41,84 +39,65 @@ export default function ProfileClient({ id }: { id: string }) {
     setMounted(true);
   }, []);
 
-  const fetchProfile = async () => {
-    try {
-      // Load uploaded images
-      const userId = id === 'me' ? 'demo-user-id' : id;
-      const uploadedProfileImage = ImageUploadService.getProfileImage(userId);
-      const uploadedCoverImage = ImageUploadService.getCoverImage(userId);
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        // API call would go here
+        // const response = await fetch(`/api/profiles/${id}`);
+        // const data = await response.json();
+        
+        // Load uploaded images
+        const userId = id === 'me' ? 'demo-user-id' : id;
+        const uploadedProfileImage = ImageUploadService.getProfileImage(userId);
+        const uploadedCoverImage = ImageUploadService.getCoverImage(userId);
 
-      // Load saved profile data from localStorage
-      let savedProfileData: any = null;
-      if (typeof window !== 'undefined') {
-        const savedProfile = localStorage.getItem('amenity_profile_backup');
-        if (savedProfile) {
-          try {
-            savedProfileData = JSON.parse(savedProfile);
-          } catch (e) {
-            console.error('Error parsing saved profile:', e);
+        // Load saved profile data from localStorage
+        let savedProfileData: any = null;
+        if (typeof window !== 'undefined') {
+          const savedProfile = localStorage.getItem('amenity_profile_backup');
+          if (savedProfile) {
+            try {
+              savedProfileData = JSON.parse(savedProfile);
+            } catch (e) {
+              console.error('Error parsing saved profile:', e);
+            }
           }
         }
+
+        // Mock data for now - use saved data if available
+        const mockProfile: UserProfile = {
+          id: id,
+          name: savedProfileData?.name || (id === 'me' ? 'Your Profile' : `User ${id}`),
+          username: savedProfileData?.username || (id === 'me' ? '@yourhandle' : `@user${id}`),
+          bio: savedProfileData?.bio || (id === 'me' 
+            ? 'Welcome to your Amenity profile! Connect, create, and grow your community. ✨ Living my best life on the platform!' 
+            : 'Sharing life moments and connecting with amazing people on Amenity. 🌟 Content creator | Lifestyle | Faith'),
+          avatar: uploadedProfileImage || '/logos/altar-life-logo.png',
+          coverImage: uploadedCoverImage || '/images/default-cover.jpg',
+          followers: savedProfileData?.stats?.followers || 0,
+          following: savedProfileData?.stats?.following || 1,
+          posts: savedProfileData?.stats?.posts || 0,
+          verified: Math.random() > 0.3,
+          joinDate: 'January 2024',
+          location: savedProfileData?.location || 'New York, NY',
+          website: savedProfileData?.website || 'amenityapp.com',
+          isFollowing: Math.random() > 0.5
+        };
+
+        // Load real posts from PostService
+        const userPosts = PostService.getUserPosts(userId);
+        
+        setPosts(userPosts);
+        setProfile(mockProfile);
+        setIsFollowing(mockProfile.isFollowing || false);
+      } catch (error) {
+        console.error('Error fetching profile:', error);
+      } finally {
+        setLoading(false);
       }
+    };
 
-      // Mock data for now - use saved data if available
-      const mockProfile: UserProfile = {
-        id: id,
-        name: savedProfileData?.name || (id === 'me' ? 'Your Profile' : `User ${id}`),
-        username: savedProfileData?.username || (id === 'me' ? '@yourhandle' : `@user${id}`),
-        bio: savedProfileData?.bio || (id === 'me' 
-          ? 'Welcome to your Amenity profile! Connect, create, and grow your community. ✨ Living my best life on the platform!' 
-          : 'Sharing life moments and connecting with amazing people on Amenity. 🌟 Content creator | Lifestyle | Faith'),
-        avatar: uploadedProfileImage || '/logos/altar-life-logo.png',
-        coverImage: uploadedCoverImage || '/images/default-cover.jpg',
-        followers: savedProfileData?.stats?.followers || 0,
-        following: savedProfileData?.stats?.following || 1,
-        posts: savedProfileData?.stats?.posts || 0,
-        verified: Math.random() > 0.3,
-        joinDate: 'January 2024',
-        location: savedProfileData?.location || 'New York, NY',
-        website: savedProfileData?.website || 'amenityapp.com',
-        isFollowing: Math.random() > 0.5
-      };
-
-      // Load real posts from PostService
-      const userPosts = PostService.getUserPosts(userId);
-      
-      setPosts(userPosts);
-      setProfile(mockProfile);
-      setIsFollowing(mockProfile.isFollowing || false);
-      setLoading(false);
-    } catch (error) {
-      console.error('Error fetching profile:', error);
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
     fetchProfile();
-
-    // Listen for storage changes
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'amenity_profile_backup' || e.key?.includes('amenity_')) {
-        fetchProfile();
-      }
-    };
-
-    const handleProfileUpdate = () => {
-      fetchProfile();
-    };
-
-    if (typeof window !== 'undefined') {
-      window.addEventListener('storage', handleStorageChange);
-      window.addEventListener('profileUpdated', handleProfileUpdate);
-    }
-
-    return () => {
-      if (typeof window !== 'undefined') {
-        window.removeEventListener('storage', handleStorageChange);
-        window.removeEventListener('profileUpdated', handleProfileUpdate);
-      }
-    };
   }, [id]);
 
   const handleFollow = async () => {
@@ -155,10 +134,6 @@ export default function ProfileClient({ id }: { id: string }) {
   };
 
   const handlePostLike = (postId: string) => {
-    const userId = id === 'me' ? 'demo-user-id' : id;
-    PostService.toggleLike(userId, postId);
-    
-    // Update UI
     setPosts(posts.map(post => 
       post.id === postId 
         ? { 
@@ -179,44 +154,6 @@ export default function ProfileClient({ id }: { id: string }) {
         url: `${window.location.origin}/profiles/${id}/posts/${postId}`
       });
     }
-  };
-
-  const handleCreatePost = () => {
-    if (!newPostContent.trim()) return;
-    
-    const userId = 'demo-user-id';
-    
-    // Get profile data for post author info
-    const savedProfile = typeof window !== 'undefined' ? localStorage.getItem('amenity_profile_backup') : null;
-    let authorName = 'Your Profile';
-    let authorUsername = '@yourhandle';
-    
-    if (savedProfile) {
-      try {
-        const parsed = JSON.parse(savedProfile);
-        authorName = parsed.name || authorName;
-        authorUsername = parsed.username || authorUsername;
-      } catch (e) {
-        console.error('Error parsing profile:', e);
-      }
-    }
-
-    const profileImage = ImageUploadService.getProfileImage(userId);
-    
-    const newPost = PostService.createPost(
-      userId,
-      newPostContent,
-      authorName,
-      authorUsername,
-      profileImage || '/logos/altar-life-logo.png'
-    );
-    
-    // Add to posts list
-    setPosts([newPost, ...posts]);
-    
-    // Clear form and close modal
-    setNewPostContent('');
-    setShowCreatePost(false);
   };
 
   const navigateToFollowers = () => {
@@ -540,7 +477,7 @@ export default function ProfileClient({ id }: { id: string }) {
               </button>
               {id === 'me' && (
                 <button 
-                  onClick={() => setShowCreatePost(true)}
+                  onClick={() => router.push('/creator/upload')}
                   className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-6 py-2 rounded-full font-semibold transition-all"
                 >
                   ➕ Create Post
@@ -548,69 +485,7 @@ export default function ProfileClient({ id }: { id: string }) {
               )}
             </div>
           </div>
-
-          {/* Create Post Modal */}
-          {showCreatePost && (
-            <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
-              <div className="bg-gradient-to-br from-gray-900 to-black border border-gray-700 rounded-2xl p-6 max-w-2xl w-full">
-                <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-2xl font-bold text-white">Create New Post</h3>
-                  <button 
-                    onClick={() => setShowCreatePost(false)}
-                    className="text-gray-400 hover:text-white text-2xl"
-                  >
-                    ×
-                  </button>
-                </div>
-                
-                <textarea
-                  value={newPostContent}
-                  onChange={(e) => setNewPostContent(e.target.value)}
-                  placeholder="What's on your mind? Share with your community..."
-                  className="w-full bg-black/50 border border-gray-700 rounded-xl p-4 text-white placeholder-gray-500 min-h-[150px] focus:outline-none focus:border-purple-500 transition-colors"
-                  autoFocus
-                />
-                
-                <div className="flex justify-end space-x-3 mt-4">
-                  <button 
-                    onClick={() => setShowCreatePost(false)}
-                    className="px-6 py-2 rounded-full bg-gray-700 hover:bg-gray-600 text-white font-medium transition-colors"
-                  >
-                    Cancel
-                  </button>
-                  <button 
-                    onClick={handleCreatePost}
-                    disabled={!newPostContent.trim()}
-                    className="px-6 py-2 rounded-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    Post
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {posts.length === 0 ? (
-            <div className="bg-black/20 rounded-2xl p-12 border border-gray-700 text-center">
-              <div className="text-6xl mb-4">📝</div>
-              <h3 className="text-2xl font-bold text-white mb-2">No posts yet</h3>
-              <p className="text-gray-400 mb-6">
-                {id === 'me' 
-                  ? "Start sharing your thoughts with the community! Click 'Create Post' to get started."
-                  : "This user hasn't posted anything yet."}
-              </p>
-              {id === 'me' && (
-                <button 
-                  onClick={() => setShowCreatePost(true)}
-                  className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-8 py-3 rounded-full font-semibold transition-all"
-                >
-                  Create Your First Post
-                </button>
-              )}
-            </div>
-          ) : (
-            <div className="space-y-6">
-              {posts.map((post) => (
+          {posts.map((post) => (
             <div key={post.id} className="bg-black/30 rounded-2xl p-6 border border-gray-700 hover:border-gray-600 transition-colors">
               <div className="flex items-center space-x-3 mb-4">
                 <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full flex items-center justify-center text-white font-bold">
@@ -679,8 +554,8 @@ export default function ProfileClient({ id }: { id: string }) {
               </div>
             </div>
           ))}
-            </div>
-          )}
+        </div>
+      )}
 
       {activeTab === 'about' && (
         <div className="bg-black/20 rounded-2xl p-8 border border-gray-700">

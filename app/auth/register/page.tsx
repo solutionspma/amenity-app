@@ -75,7 +75,7 @@ export default function RegisterPage() {
         localStorage.setItem('amenity_profile_backup', JSON.stringify(profile));
         
         // Auto-follow master user
-        PostService.autoFollowAdmin();
+        PostService.autoFollowAdmin('demo-user-id');
       }
       
       // Simulate registration for now

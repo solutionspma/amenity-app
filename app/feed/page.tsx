@@ -5,21 +5,8 @@ import Link from 'next/link';
 import { useBackdrop } from '@/contexts/BackdropContext';
 import AmenityHeader from '@/components/AmenityHeader';
 import AmenityFooter from '@/components/AmenityFooter';
-import { PostService } from '@/lib/services/post-service';
+import { PostService, type Post } from '@/lib/services/post-service';
 import { ImageUploadService } from '@/lib/services/image-upload';
-
-interface Post {
-  id: string;
-  authorName: string;
-  authorAvatar: string;
-  content: string;
-  image?: string;
-  timestamp: number;
-  likes: number;
-  comments: number;
-  shares: number;
-  liked?: boolean;
-}
 
 export default function FeedPage() {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -72,13 +59,15 @@ export default function FeedPage() {
   }, []);
 
   const handleLike = (postId: string) => {
-    PostService.toggleLike(postId);
+    const userId = typeof window !== 'undefined' ? localStorage.getItem('amenity_user_id') || 'demo-user-id' : 'demo-user-id';
+    PostService.toggleLike(postId, userId);
     const updated = PostService.getGlobalFeed();
     setPosts(updated);
   };
 
-  const formatTime = (timestamp: number) => {
-    const diff = Date.now() - timestamp;
+  const formatTime = (timestamp: number | string) => {
+    const ts = typeof timestamp === 'string' ? parseInt(timestamp) : timestamp;
+    const diff = Date.now() - ts;
     const hours = Math.floor(diff / (1000 * 60 * 60));
     if (hours < 1) return 'Just now';
     if (hours < 24) return `${hours}h ago`;
